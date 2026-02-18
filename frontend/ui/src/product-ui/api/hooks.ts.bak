@@ -1,0 +1,143 @@
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { api } from "./client";
+
+/* ─── Query Keys ─── */
+export const queryKeys = {
+  health: ["health"] as const,
+  metrics: ["metrics"] as const,
+  document: (id: string) => ["document", id] as const,
+  search: (query: string) => ["search", query] as const,
+  models: ["models"] as const,
+  model: (domain: string) => ["model", domain] as const,
+  mode1Stage: ["mode1", "stage"] as const,
+  protocolStatus: ["protocol", "status"] as const,
+};
+
+/* ─── Health & Metrics ─── */
+export function useHealth() {
+  return useQuery({
+    queryKey: queryKeys.health,
+    queryFn: api.health,
+    refetchInterval: 15000,
+    retry: 1,
+  });
+}
+
+export function useMetrics() {
+  return useQuery({
+    queryKey: queryKeys.metrics,
+    queryFn: api.metrics,
+    refetchInterval: 10000,
+    retry: 1,
+  });
+}
+
+/* ─── Documents ─── */
+export function useDocument(docId: string) {
+  return useQuery({
+    queryKey: queryKeys.document(docId),
+    queryFn: () => api.getDocument(docId),
+    enabled: !!docId,
+  });
+}
+
+export function useUploadDocument() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (file: File) => api.uploadDocument(file),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["document"] });
+    },
+  });
+}
+
+export function useIndexDocument() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (docId: string) => api.indexDocument(docId),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["document"] });
+    },
+  });
+}
+
+/* ─── Search ─── */
+export function useSearch() {
+  return useMutation({
+    mutationFn: ({ query, topK, docScope }: { query: string; topK?: number; docScope?: string }) =>
+      api.search(query, topK, docScope),
+  });
+}
+
+/* ─── Mode 1 ─── */
+export function useExecuteMode1() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (params: { domain: string; query: string; maxVars?: number; maxEdges?: number }) =>
+      api.executeMode1(params.domain, params.query, params.maxVars, params.maxEdges),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: queryKeys.models });
+    },
+  });
+}
+
+export function useMode1Stage(enabled: boolean) {
+  return useQuery({
+    queryKey: queryKeys.mode1Stage,
+    queryFn: api.getMode1Stage,
+    refetchInterval: enabled ? 2000 : false,
+    enabled,
+  });
+}
+
+export function useApproveModel() {
+  const qc = useQueryClient();
+  return useMutation({
+    mutationFn: (domain: string) => api.approveModel(domain),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: queryKeys.models });
+    },
+  });
+}
+
+/* ─── Mode 2 ─── */
+export function useExecuteMode2() {
+  return useMutation({
+    mutationFn: (params: { question: string; domainHint?: string }) =>
+      api.executeMode2(params.question, params.domainHint),
+  });
+}
+
+/* ─── Models ─── */
+export function useModels() {
+  return useQuery({
+    queryKey: queryKeys.models,
+    queryFn: api.listModels,
+    refetchInterval: 30000,
+  });
+}
+
+export function useModel(domain: string) {
+  return useQuery({
+    queryKey: queryKeys.model(domain),
+    queryFn: () => api.getModel(domain),
+    enabled: !!domain,
+  });
+}
+
+/* ─── Unified Query ─── */
+export function useUnifiedQuery() {
+  return useMutation({
+    mutationFn: (params: { query: string; sessionId?: string }) =>
+      api.query(params.query, params.sessionId),
+  });
+}
+
+/* ─── Protocol ─── */
+export function useProtocolStatus() {
+  return useQuery({
+    queryKey: queryKeys.protocolStatus,
+    queryFn: api.protocolStatus,
+    refetchInterval: 5000,
+  });
+}

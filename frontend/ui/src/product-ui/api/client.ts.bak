@@ -1,0 +1,255 @@
+/* ─── Causeway API Client ─── */
+
+const BASE_URL = "";
+
+async function request<T>(
+  path: string,
+  options?: RequestInit & { params?: Record<string, string> }
+): Promise<T> {
+  const { params, ...init } = options || {};
+
+  let url = `${BASE_URL}${path}`;
+  if (params) {
+    const searchParams = new URLSearchParams(params);
+    url += `?${searchParams.toString()}`;
+  }
+
+  const res = await fetch(url, {
+    ...init,
+    headers: {
+      "Content-Type": "application/json",
+      ...init?.headers,
+    },
+  });
+
+  if (!res.ok) {
+    const body = await res.text();
+    throw new ApiError(res.status, body, path);
+  }
+
+  return res.json();
+}
+
+export class ApiError extends Error {
+  constructor(
+    public status: number,
+    public body: string,
+    public path: string
+  ) {
+    super(`API ${status} on ${path}: ${body}`);
+    this.name = "ApiError";
+  }
+}
+
+/* ─── Types (mirroring Pydantic models) ─── */
+
+export type IngestionStatus = "pending" | "indexing" | "indexed" | "failed";
+export type EvidenceStrength = "strong" | "moderate" | "hypothesis" | "contested";
+export type ModelStatus = "draft" | "review" | "active" | "deprecated";
+export type VariableType = "continuous" | "discrete" | "binary" | "categorical";
+export type MeasurementStatus = "measured" | "observable" | "latent";
+export type CausalRole = "treatment" | "outcome" | "confounder" | "mediator" | "instrumental" | "covariate" | "unknown";
+export type ConfidenceLevel = "high" | "medium" | "low";
+export type OperationalMode = "world_model_construction" | "decision_support";
+export type ProtocolState = "idle" | "routing" | "wm_discovery_running" | "wm_review_pending" | "wm_active" | "decision_support_running" | "response_ready" | "error";
+
+export interface HealthResponse {
+  status: string;
+  version?: string;
+  timestamp?: string;
+}
+
+export interface MetricsResponse {
+  uptime_seconds: number;
+  total_requests: number;
+  error_count: number;
+  [key: string]: unknown;
+}
+
+export interface DocumentMetadata {
+  doc_id: string;
+  filename: string;
+  content_type: string;
+  size_bytes: number;
+  sha256: string;
+  storage_uri: string;
+  ingestion_status: IngestionStatus;
+  pageindex_doc_id?: string;
+  haystack_doc_ids?: string[];
+}
+
+export interface SearchResult {
+  content: string;
+  score: number;
+  doc_id?: string;
+  meta?: Record<string, unknown>;
+}
+
+export interface CausalVariable {
+  variable_id: string;
+  name: string;
+  definition: string;
+  type: VariableType;
+  measurement_status: MeasurementStatus;
+  data_source?: string;
+  unit?: string;
+  role: CausalRole;
+}
+
+export interface EdgeMetadata {
+  mechanism: string;
+  evidence_strength: EvidenceStrength;
+  evidence_refs: string[];
+  contradicting_refs: string[];
+  assumptions: string[];
+  conditions: string[];
+  confidence: number;
+  notes?: string;
+}
+
+export interface CausalEdge {
+  from_var: string;
+  to_var: string;
+  metadata: EdgeMetadata;
+}
+
+export interface CausalPath {
+  path: string[];
+  edges: CausalEdge[];
+  mechanism_chain: string[];
+  strength: number;
+}
+
+export interface WorldModelVersion {
+  version_id: string;
+  domain: string;
+  description: string;
+  variables: Record<string, CausalVariable>;
+  edges: CausalEdge[];
+  dag_json: Record<string, unknown>;
+  created_at: string;
+  created_by: string;
+  approved_at?: string;
+  approved_by?: string;
+  status: ModelStatus;
+  replaces_version?: string;
+}
+
+export interface DecisionRecommendation {
+  recommendation: string;
+  confidence: number;
+  expected_outcome: string;
+  causal_paths: CausalPath[];
+  evidence_refs: string[];
+  risks: string[];
+  unmeasured_factors: string[];
+  suggested_actions: string[];
+  suggested_data_collection: string[];
+  reasoning_trace: string[];
+}
+
+export interface EscalationNotice {
+  escalation_id: string;
+  message: string;
+  reason: string;
+  original_query: string;
+  suggested_mode1_scope?: string;
+  conflicts_detected?: string[];
+}
+
+export interface Mode1StageResponse {
+  stage: string;
+  progress?: number;
+  message?: string;
+}
+
+export interface ProtocolStatus {
+  state: ProtocolState;
+  mode?: OperationalMode;
+  context?: Record<string, unknown>;
+}
+
+export interface QueryResponse {
+  mode: OperationalMode;
+  result: DecisionRecommendation | WorldModelVersion | EscalationNotice;
+  trace_id?: string;
+}
+
+/* ─── API Endpoints ─── */
+
+export const api = {
+  // Health & Metrics
+  health: () => request<HealthResponse>("/health"),
+  metrics: () => request<MetricsResponse>("/metrics"),
+
+  // Documents
+  uploadDocument: async (file: File): Promise<DocumentMetadata> => {
+    const formData = new FormData();
+    formData.append("file", file);
+    const res = await fetch(`${BASE_URL}/api/uploads`, {
+      method: "POST",
+      body: formData,
+    });
+    if (!res.ok) throw new ApiError(res.status, await res.text(), "/api/uploads");
+    return res.json();
+  },
+
+  getDocument: (docId: string) =>
+    request<DocumentMetadata>(`/api/documents/${docId}`),
+
+  indexDocument: (docId: string) =>
+    request<{ status: string }>(`/api/index`, {
+      method: "POST",
+      body: JSON.stringify({ doc_id: docId }),
+    }),
+
+  // Search
+  search: (query: string, topK: number = 5, docScope?: string) =>
+    request<{ results: SearchResult[] }>("/api/search", {
+      method: "POST",
+      body: JSON.stringify({ query, top_k: topK, doc_scope: docScope }),
+    }),
+
+  // Mode 1 — World Model Construction
+  executeMode1: (domain: string, query: string, maxVars?: number, maxEdges?: number) =>
+    request<WorldModelVersion | { status: string }>("/api/mode1/execute", {
+      method: "POST",
+      body: JSON.stringify({
+        domain,
+        query,
+        max_variables: maxVars,
+        max_edges: maxEdges,
+      }),
+    }),
+
+  getMode1Stage: () => request<Mode1StageResponse>("/api/mode1/stage"),
+
+  approveModel: (domain: string) =>
+    request<{ status: string }>("/api/mode1/approve", {
+      method: "POST",
+      body: JSON.stringify({ domain }),
+    }),
+
+  // Mode 2 — Decision Support
+  executeMode2: (question: string, domainHint?: string) =>
+    request<DecisionRecommendation | EscalationNotice>("/api/mode2/execute", {
+      method: "POST",
+      body: JSON.stringify({ question, domain_hint: domainHint }),
+    }),
+
+  // World Models
+  listModels: () => request<{ models: WorldModelVersion[] }>("/api/models"),
+
+  getModel: (domain: string) =>
+    request<WorldModelVersion>(`/api/models/${domain}`),
+
+  // Unified Query
+  query: (query: string, sessionId?: string) =>
+    request<QueryResponse>("/api/query", {
+      method: "POST",
+      body: JSON.stringify({ query, session_id: sessionId }),
+    }),
+
+  // Protocol
+  protocolStatus: () => request<ProtocolStatus>("/api/protocol/status"),
+};
