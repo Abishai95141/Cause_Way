@@ -83,6 +83,12 @@ frontend/ui/node_modules/
 frontend/ui/dist/
 frontend/ui/.vite/
 frontend/ui/.turbo/
+!frontend/ui/src/product-ui/lib/
+!frontend/ui/src/product-ui/lib/*.ts
+!frontend/ui/src/product-ui/lib/*.tsx
+!frontend/ui/app/src/product-ui/lib/
+!frontend/ui/app/src/product-ui/lib/*.ts
+!frontend/ui/app/src/product-ui/lib/*.tsx
 
 # Accidental files
 -d
