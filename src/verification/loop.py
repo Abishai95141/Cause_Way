@@ -38,6 +38,11 @@ from src.verification.judge import (
     VerificationVerdict,
 )
 
+try:
+    from src.utils.telemetry import get_telemetry as _get_telemetry
+except ImportError:
+    _get_telemetry = None
+
 _logger = logging.getLogger(__name__)
 
 
@@ -226,10 +231,13 @@ class VerificationAgent:
                     # If adversarial judge says spurious, downgrade
                     if not adv.still_grounded:
                         _logger.warning(
-                            "Adversarial pass rejected %s: %s",
+                            "[TELEMETRY] Adversarial pass rejected %s: %s",
                             state.edge_label,
                             adv.alternative_explanations[:2],
                         )
+                        _tel = _get_telemetry() if _get_telemetry else None
+                        if _tel:
+                            _tel.verification.adversarial_rejections += 1
                         state.grounded = False
                         state.rejection_reason = (
                             f"Adversarial rejection: {'; '.join(adv.alternative_explanations[:3])}"
@@ -333,8 +341,20 @@ class VerificationAgent:
             "rejected": len(final) - grounded_count,
         })
 
+        # Record per-edge final outcome in telemetry
+        _tel = _get_telemetry() if _get_telemetry else None
+        if _tel:
+            for r in final:
+                _tel.record_verification_final(
+                    from_var=r.from_var,
+                    to_var=r.to_var,
+                    grounded=r.grounded,
+                    rejection_reason=r.rejection_reason,
+                    iterations_used=r.iterations_used,
+                )
+
         _logger.info(
-            "Verification batch complete: %d/%d edges grounded",
+            "[TELEMETRY] Verification batch complete: %d/%d edges grounded",
             grounded_count, len(final),
         )
         return final
@@ -385,10 +405,18 @@ class VerificationAgent:
             all_chunks = grounding.support_chunks + grounding.refute_chunks
             if not all_chunks:
                 _logger.warning(
-                    "No evidence retrieved for %s (iter %d)",
-                    state.edge_label, state.iteration,
+                    "[TELEMETRY] No evidence retrieved for %s (iter %d) query=%r",
+                    state.edge_label, state.iteration, grounding.query_used,
                 )
                 state.rejection_reason = "no_evidence_retrieved"
+                _tel = _get_telemetry() if _get_telemetry else None
+                if _tel:
+                    _tel.verification.no_evidence_count += 1
+                    _tel.record("verification", "no_evidence", {
+                        "edge": state.edge_label,
+                        "iteration": state.iteration,
+                        "query": grounding.query_used,
+                    })
                 self.spans.end_span(iter_span, SpanStatus.COMPLETED, {
                     "chunks_retrieved": 0,
                     "verdict": "no_evidence",
@@ -403,6 +431,30 @@ class VerificationAgent:
                 evidence_chunks=all_chunks,
             )
             state.verdicts.append(verdict)
+
+            # ── Telemetry: record verdict detail ───────────────────────
+            _tel = _get_telemetry() if _get_telemetry else None
+            evidence_block_chars = sum(len(c.content) for c in all_chunks)
+            if _tel:
+                _tel.record_verification_verdict(
+                    from_var=state.from_var,
+                    to_var=state.to_var,
+                    iteration=state.iteration,
+                    is_grounded=verdict.is_grounded,
+                    confidence=verdict.confidence,
+                    support_type=verdict.support_type.value,
+                    has_refinement=verdict.suggested_refinement_query is not None,
+                    evidence_chunk_count=len(all_chunks),
+                    evidence_block_chars=evidence_block_chars,
+                )
+            _logger.info(
+                "[TELEMETRY] Judge verdict %s iter=%d: grounded=%s type=%s "
+                "confidence=%.2f evidence_chars=%d chunks=%d refinement=%r",
+                state.edge_label, state.iteration,
+                verdict.is_grounded, verdict.support_type.value,
+                verdict.confidence, evidence_block_chars, len(all_chunks),
+                (verdict.suggested_refinement_query or "")[:80],
+            )
 
             self.spans.end_span(iter_span, SpanStatus.COMPLETED, {
                 "chunks_retrieved": len(all_chunks),
@@ -434,10 +486,13 @@ class VerificationAgent:
                 norm_refinement = _normalise_query(refinement)
                 if norm_refinement in state.attempted_queries:
                     _logger.warning(
-                        "Judge suggested duplicate query for %s: '%s' — "
+                        "[TELEMETRY] Judge suggested duplicate query for %s: '%s' — "
                         "breaking loop to prevent infinite cycle",
                         state.edge_label, refinement,
                     )
+                    _tel = _get_telemetry() if _get_telemetry else None
+                    if _tel:
+                        _tel.verification.duplicate_query_breaks += 1
                     state.rejection_reason = (
                         f"exhausted_refinements: judge repeated query '{refinement}'"
                     )
@@ -452,6 +507,9 @@ class VerificationAgent:
 
         # Exhausted all iterations
         if not state.grounded:
+            _tel = _get_telemetry() if _get_telemetry else None
+            if _tel:
+                _tel.verification.exhausted_iterations_count += 1
             state.rejection_reason = (
                 state.rejection_reason
                 or f"max_iterations_reached ({state.max_iterations})"

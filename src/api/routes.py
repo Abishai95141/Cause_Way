@@ -10,6 +10,7 @@ Implements all REST endpoints:
 All document metadata is persisted in PostgreSQL via DatabaseService.
 """
 
+import asyncio
 import hashlib
 import logging
 from datetime import datetime, timezone
@@ -42,6 +43,8 @@ _object_store: Optional[ObjectStore] = None
 _retrieval_router: Optional[RetrievalRouter] = None
 _causal_service: Optional[CausalService] = None
 _mode1: Optional[Mode1WorldModelConstruction] = None
+_mode1_task: Optional[asyncio.Task] = None
+_mode1_result: Optional[Any] = None
 _mode2: Optional[Mode2DecisionSupport] = None
 _protocol_sm: Optional[ProtocolStateMachine] = None
 _mode_router: Optional[ModeRouter] = None
@@ -153,8 +156,8 @@ class Mode1Request(BaseModel):
     """Request to run Mode 1."""
     domain: str = Field(..., description="Decision domain (e.g., 'pricing')")
     initial_query: str = Field(..., description="Starting query for evidence")
-    max_variables: int = Field(default=20, ge=1, le=100)
-    max_edges: int = Field(default=50, ge=1, le=200)
+    max_variables: int = Field(default=0, ge=0, description="Hint for variable discovery (0 = unlimited, all valid variables pass through)")
+    max_edges: int = Field(default=0, ge=0, description="Soft hint only (0 = unlimited, all grounded edges are kept)")
     doc_ids: Optional[list[str]] = Field(default=None, description="Restrict evidence to these document IDs")
 
 
@@ -578,28 +581,50 @@ async def list_documents():
 async def run_mode1(request: Mode1Request):
     """
     Run Mode 1: World Model Construction
-    
-    Builds a causal world model from evidence.
+
+    Kicks off the pipeline as a background async task and returns
+    immediately.  The frontend polls ``/mode1/status`` for progress.
     """
+    global _mode1_task, _mode1_result
+
     mode1 = await get_mode1()
-    
-    result = await mode1.run(
-        domain=request.domain,
-        initial_query=request.initial_query,
-        max_variables=request.max_variables,
-        max_edges=request.max_edges,
-        doc_ids=request.doc_ids,
-    )
-    
+
+    # Guard: reject if a build is already running
+    if _mode1_task is not None and not _mode1_task.done():
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="A Mode 1 build is already in progress. Wait for it to finish or restart the server.",
+        )
+
+    # Reset stale state so the status endpoint immediately reflects the new run
+    mode1._current_stage = Mode1Stage.VARIABLE_DISCOVERY
+    _mode1_result = None
+
+    async def _run_pipeline() -> None:
+        global _mode1_result
+        try:
+            _mode1_result = await mode1.run(
+                domain=request.domain,
+                initial_query=request.initial_query,
+                max_variables=request.max_variables,
+                max_edges=request.max_edges,
+                doc_ids=request.doc_ids,
+            )
+        except Exception as exc:
+            logger.error("Mode 1 background task crashed: %s", exc, exc_info=True)
+            _mode1_result = None
+
+    _mode1_task = asyncio.create_task(_run_pipeline())
+
+    # Return immediately with a "started" response
     return Mode1Response(
-        trace_id=result.trace_id,
-        domain=result.domain,
-        stage=result.stage.value,
-        variables_discovered=result.variables_discovered,
-        edges_created=result.edges_created,
-        evidence_linked=result.evidence_linked,
-        requires_review=result.requires_review,
-        error=result.error,
+        trace_id=f"m1_started_{uuid4().hex[:8]}",
+        domain=request.domain,
+        stage=Mode1Stage.VARIABLE_DISCOVERY.value,
+        variables_discovered=0,
+        edges_created=0,
+        evidence_linked=0,
+        requires_review=False,
     )
 
 
@@ -608,7 +633,22 @@ async def get_mode1_status():
     """Return the current live stage of Mode 1 (useful for polling)."""
     if _mode1 is None:
         return {"stage": "idle", "detail": "Mode 1 not initialised"}
-    return {"stage": _mode1.current_stage.value}
+
+    stage = _mode1.current_stage.value
+    detail: Optional[str] = None
+    running = _mode1_task is not None and not _mode1_task.done()
+
+    if _mode1_task is not None and _mode1_task.done():
+        if _mode1_result is not None:
+            detail = (
+                f"Completed: {_mode1_result.variables_discovered} vars, "
+                f"{_mode1_result.edges_created} edges"
+            )
+        elif _mode1_task.exception():
+            detail = f"Error: {_mode1_task.exception()}"
+            stage = "error"
+
+    return {"stage": stage, "detail": detail, "running": running}
 
 
 @router.post("/mode1/approve", response_model=WorldModelSummary)

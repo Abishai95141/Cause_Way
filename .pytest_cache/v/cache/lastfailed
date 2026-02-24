@@ -1,0 +1,19 @@
+{
+  "tests/test_api_training.py::TestDocumentEndpoints::test_get_document_returns_placeholder": true,
+  "tests/test_causal_agent.py::TestLLMClient::test_mock_mode_enabled": true,
+  "tests/test_causal_agent.py::TestLLMClient::test_generate": true,
+  "tests/test_causal_agent.py::TestLLMClient::test_generate_with_custom_mock": true,
+  "tests/test_causal_agent.py::TestLLMClient::test_generate_with_tools": true,
+  "tests/test_modes.py::TestMode1WorldModelConstruction::test_parse_variables_valid_json": true,
+  "tests/test_modes.py::TestMode1WorldModelConstruction::test_parse_edges_valid_json": true,
+  "tests/test_modes.py::TestMode1WorldModelConstruction::test_parse_variables_handles_invalid_json": true,
+  "tests/test_modes.py::TestMode1WorldModelConstruction::test_parse_edges_handles_invalid_json": true,
+  "tests/test_modes.py::TestMode2DecisionSupport::test_extract_parsed_query_valid_json": true,
+  "tests/test_modes.py::TestMode2DecisionSupport::test_extract_parsed_query_handles_invalid_json": true,
+  "tests/test_modes.py::TestMode1Phase1::test_parse_edges_with_evidence_ids": true,
+  "tests/test_modes.py::TestMode1Phase1::test_parse_edges_without_evidence_ids": true,
+  "tests/test_modes.py::TestMode1Phase1::test_evidence_grounded_dag_prompt_exists": true,
+  "tests/test_pywhyllm_bridge.py::TestExtractMechanismFromEvidence::test_no_evidence_returns_default": true,
+  "tests/test_pywhyllm_bridge.py::TestExtractMechanismFromEvidence::test_single_evidence_returns_citation": true,
+  "tests/test_pywhyllm_bridge.py::TestExtractMechanismFromEvidence::test_multiple_evidence_concatenates_citations": true
+}

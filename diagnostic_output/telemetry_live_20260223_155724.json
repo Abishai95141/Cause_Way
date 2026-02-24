@@ -1,0 +1,2878 @@
+{
+  "summary": {
+    "run_start_utc": "2026-02-23T15:48:59.387591+00:00",
+    "total_run_seconds": 505.22,
+    "stage_durations_seconds": {
+      "variable_discovery": 38.35,
+      "canonicalization": 18.76,
+      "evidence_gathering": 10.89,
+      "dag_drafting": 140.12,
+      "mechanism_synthesis": 47.91,
+      "verification": 247.95,
+      "graph_assembly": 0.02
+    },
+    "variables": {
+      "raw_discovered": 20,
+      "after_canonicalization": 16,
+      "added_to_engine": 16
+    },
+    "llm_calls": {
+      "total": 148,
+      "by_model": {
+        "gemini-2.5-flash": 42,
+        "gemini-2.5-pro": 106
+      },
+      "total_prompt_chars": 892844,
+      "total_completion_chars": 95710,
+      "est_total_prompt_tokens": 223156,
+      "avg_latency_ms": 0.0,
+      "retries": 1,
+      "errors": 0,
+      "quota_errors": 0,
+      "fallbacks_to_prompt_injection": 0
+    },
+    "pywhyllm_pairwise": {
+      "total_pairs": 120,
+      "theoretical_pairs_formula": "C(n,2) = n*(n-1)/2",
+      "edges_found_A": 29,
+      "edges_found_B": 39,
+      "no_relationship_C": 1,
+      "parse_failures": 51,
+      "exceptions": 0,
+      "avg_latency_ms": 8189.4
+    },
+    "edge_dropout": {
+      "pywhyllm_proposed": 68,
+      "langextract_proposed": 5,
+      "total_after_dedup": 50,
+      "after_mechanism_synthesis": 50,
+      "submitted_to_verification": 50,
+      "grounded_by_verification": 30,
+      "rejected_by_verification": 20,
+      "node_not_found_errors": 0,
+      "cycle_detected_errors": 0,
+      "other_add_errors": 0,
+      "final_edges_in_graph": 30
+    },
+    "verification": {
+      "edges_submitted": 50,
+      "judge_calls": 94,
+      "adversarial_calls": 11,
+      "grounded": 30,
+      "rejected": 20,
+      "no_evidence_retrievals": 0,
+      "exhausted_iterations": 10,
+      "duplicate_query_breaks": 9,
+      "adversarial_rejections": 0,
+      "avg_verdict_confidence": 0.979,
+      "rejection_reasons": [
+        {
+          "edge": "at_risk_product_features->customer_value_realization",
+          "reason": "max_iterations_reached (3)",
+          "iterations": 3
+        },
+        {
+          "edge": "customer_value_realization->customer_advocacy",
+          "reason": "max_iterations_reached (3)",
+          "iterations": 3
+        },
+        {
+          "edge": "csm_quarterly_business_reviews_qbrs->customer_value_realization",
+          "reason": "max_iterations_reached (3)",
+          "iterations": 3
+        },
+        {
+          "edge": "csm_passion->planned_product_features",
+          "reason": "exhausted_refinements: judge repeated query 'Customer Success Manager influence on product features'",
+          "iterations": 3
+        },
+        {
+          "edge": "csm_quarterly_business_reviews_qbrs->csm_passion",
+          "reason": "exhausted_refinements: judge repeated query 'impact of Quarterly Business Reviews on CSM morale and passion'",
+          "iterations": 2
+        },
+        {
+          "edge": "csm_services_and_support->csm_passion",
+          "reason": "The evidence describes the services and support provided by CSMs and separately mentions that the mission involves 'aligning passionate CSMs with customers'. It does not state or imply that the act of providing these services causes or affects the passion of the CSMs. Passion is presented as a characteristic of the CSMs, not an outcome of their work.",
+          "iterations": 3
+        },
+        {
+          "edge": "at_risk_product_features->customer_adoption",
+          "reason": "exhausted_refinements: judge repeated query 'impact of at-risk product features on customer adoption'",
+          "iterations": 2
+        },
+        {
+          "edge": "data_quality_and_availability->customer_adoption",
+          "reason": "max_iterations_reached (3)",
+          "iterations": 3
+        },
+        {
+          "edge": "customer_adoption->competitive_considerations",
+          "reason": "max_iterations_reached (3)",
+          "iterations": 3
+        },
+        {
+          "edge": "csm_quarterly_business_reviews_qbrs->customer_adoption",
+          "reason": "exhausted_refinements: judge repeated query 'purpose of CSM Quarterly Business Reviews and their impact on customer adoption'",
+          "iterations": 3
+        },
+        {
+          "edge": "at_risk_product_features->gitlab_use_cases",
+          "reason": "exhausted_refinements: judge repeated query 'impact of product feature adoption risk on customer use cases'",
+          "iterations": 2
+        },
+        {
+          "edge": "gitlab_use_cases->tier_1_metrics",
+          "reason": "exhausted_refinements: judge repeated query 'impact of GitLab use case adoption on tier 1 metrics'",
+          "iterations": 3
+        },
+        {
+          "edge": "customer_satisfaction->customer_advocacy",
+          "reason": "max_iterations_reached (3)",
+          "iterations": 3
+        },
+        {
+          "edge": "at_risk_product_features->customer_satisfaction",
+          "reason": "max_iterations_reached (3)",
+          "iterations": 3
+        },
+        {
+          "edge": "data_quality_and_availability->customer_satisfaction",
+          "reason": "exhausted_refinements: judge repeated query 'impact of data quality on customer experience and satisfaction'",
+          "iterations": 3
+        },
+        {
+          "edge": "tier_1_metrics->customer_satisfaction",
+          "reason": "exhausted_refinements: judge repeated query 'GitLab \"Tier 1 metrics\" impact on \"customer satisfaction\"'",
+          "iterations": 2
+        },
+        {
+          "edge": "data_quality_and_availability->customer_advocacy",
+          "reason": "max_iterations_reached (3)",
+          "iterations": 3
+        },
+        {
+          "edge": "csm_quarterly_business_reviews_qbrs->customer_advocacy",
+          "reason": "exhausted_refinements: judge repeated query 'impact of quarterly business reviews on customer advocacy'",
+          "iterations": 2
+        },
+        {
+          "edge": "csm_quarterly_business_reviews_qbrs->planned_product_features",
+          "reason": "max_iterations_reached (3)",
+          "iterations": 3
+        },
+        {
+          "edge": "business_process_strength->committed_product_features",
+          "reason": "max_iterations_reached (3)",
+          "iterations": 3
+        }
+      ]
+    },
+    "var_id_resolve_misses": [],
+    "evidence_cache_size": 40
+  },
+  "pywhyllm_raw_outputs": [
+    {
+      "var1": "customer_value_realization",
+      "var2": "competitive_considerations",
+      "answer_parsed": "",
+      "raw_description": "Reasoning:\nCompetitive considerations often drive a company's strategic decisions regarding product development, pricing, service quality, and innovation. When a company actively considers its competitors, it is likely to make efforts to differentiate its offerings, improve its value proposition, or match/exceed competitor benefits. These efforts are directly aimed at enhancing the perceived value for customers, thereby increasing customer value realization. If a company ignores its competitors,",
+      "latency_ms": 5924.3,
+      "error": null
+    },
+    {
+      "var1": "customer_value_realization",
+      "var2": "planned_product_features",
+      "answer_parsed": "",
+      "raw_description": "The most likely cause-and-effect relationship is B.\n\n**Reasoning:**\n\n*   **Planned product features** are the specific functionalities or characteristics that a company decides to build into its product. These features are designed with an explicit purpose: to address customer needs, solve their problems, or enhance their experience.\n*   **Customer value realization** refers to the point where customers actually derive benefit, utility, or satisfaction from using a product or service. This is an",
+      "latency_ms": 6540.5,
+      "error": null
+    },
+    {
+      "var1": "customer_value_realization",
+      "var2": "committed_product_features",
+      "answer_parsed": "",
+      "raw_description": "Reasoning:\nThe typical product development process involves identifying customer needs or problems, then committing to building specific product features designed to address those needs. Once these committed features are developed, released, and adopted by customers, they are then able to use them to achieve their goals and realize value.\n\n*   **B. committed_product_features causes customer_value_realization:** This aligns with the logical flow. The very purpose of committing to and building pro",
+      "latency_ms": 6915.6,
+      "error": null
+    },
+    {
+      "var1": "customer_value_realization",
+      "var2": "business_process_strength",
+      "answer_parsed": "",
+      "raw_description": "Strong business processes are fundamental to an organization's ability to consistently deliver quality products or services, provide efficient customer support, and manage interactions effectively. When processes are well-defined, efficient, and consistently executed, they minimize errors, reduce delays, ensure consistent quality, and ultimately lead to a more positive and predictable customer experience. This consistent positive experience is what enables customers to realize the intended value",
+      "latency_ms": 6918.8,
+      "error": null
+    },
+    {
+      "var1": "customer_value_realization",
+      "var2": "gitlab_use_cases",
+      "answer_parsed": "B",
+      "raw_description": "The most likely cause-and-effect relationship is that `gitlab_use_cases` causes `customer_value_realization`.\n\n**Reasoning:**\n\n1.  **What are `gitlab_use_cases`?** These are the specific ways a customer applies GitLab's features and functionalities (e.g., using it for CI/CD, source code management, security scanning, project management, etc.). These are actions taken by the customer *with* the product.\n2.  **What is `customer_value_realization`?** This refers to the customer experiencing the ben",
+      "latency_ms": 7410.4,
+      "error": null
+    },
+    {
+      "var1": "customer_value_realization",
+      "var2": "at_risk_product_features",
+      "answer_parsed": "B",
+      "raw_description": "The more likely cause-and-effect relationship is that `at_risk_product_features` causes `customer_value_realization`.\n\n**Reasoning:**\n\nWhen product features are \"at risk,\" it means they are likely underperforming, buggy, difficult to use, or not meeting customer expectations. If customers encounter such features, their ability to successfully use the product, achieve their goals, and derive the intended benefits is impaired. This direct impairment directly leads to a decrease in their perceived ",
+      "latency_ms": 7565.0,
+      "error": null
+    },
+    {
+      "var1": "customer_value_realization",
+      "var2": "customer_advocacy",
+      "answer_parsed": "A",
+      "raw_description": "**Reasoning:**\n\n1.  **Customer Value Realization:** This means a customer has experienced the benefits and utility they expected (or more) from a product or service. They feel their needs have been met, their problems solved, or their goals advanced because of what they purchased.\n2.  **Customer Advocacy:** This is when a customer actively promotes or defends a product, service, or company to others. This can involve positive reviews, word-of-mouth recommendations, or referrals.\n\nIt is far more ",
+      "latency_ms": 7923.8,
+      "error": null
+    },
+    {
+      "var1": "customer_value_realization",
+      "var2": "customer_adoption",
+      "answer_parsed": "",
+      "raw_description": "The more likely relationship is that customer adoption causes customer value realization.\n\nHere's the reasoning:\n\n1.  **Customer Adoption** refers to the act of a customer beginning to use a product or service. This often involves actions like purchasing, subscribing, signing up, or installing.\n2.  **Customer Value Realization** refers to the point where a customer experiences and recognizes the benefits and outcomes they desired from the product or service. This means they are actually achievin",
+      "latency_ms": 8279.5,
+      "error": null
+    },
+    {
+      "var1": "customer_value_realization",
+      "var2": "csm_passion",
+      "answer_parsed": "",
+      "raw_description": "A CSM's passion (csm_passion) directly influences their proactive engagement, problem-solving, dedication, and overall effort in helping customers succeed. These actions and attitudes are instrumental in guiding customers to understand, adopt, and ultimately realize the value of a product or service. While seeing customers realize value can certainly fuel and reinforce a CSM's passion (creating a positive feedback loop), the initial drive and consistent effort that *leads* to that value realizat",
+      "latency_ms": 8533.2,
+      "error": null
+    },
+    {
+      "var1": "customer_value_realization",
+      "var2": "customer_satisfaction",
+      "answer_parsed": "",
+      "raw_description": "The more likely cause-and-effect relationship is that customer_value_realization causes customer_satisfaction.\n\n**Reasoning:**\n\n*   **Customer Value Realization** refers to the customer actually experiencing the benefits, utility, and positive outcomes that a product or service is intended to provide. It's about whether the product/service successfully solves their problem, meets their needs, or delivers on its promise.\n*   **Customer Satisfaction** is the customer's overall emotional response o",
+      "latency_ms": 9268.5,
+      "error": null
+    },
+    {
+      "var1": "customer_value_realization",
+      "var2": "data_quality_and_availability",
+      "answer_parsed": "B",
+      "raw_description": "**Reasoning:**\n\nData quality and availability are foundational for understanding customers, optimizing products and services, and improving operational efficiency. When a company has high-quality, accessible data, it can:\n*   **Understand customer needs better:** Accurate data on preferences, behavior, and feedback allows for the development of products and services that truly meet customer demands.\n*   **Personalize experiences:** Good data enables tailored recommendations, offers, and communic",
+      "latency_ms": 6547.5,
+      "error": null
+    },
+    {
+      "var1": "customer_value_realization",
+      "var2": "csm_services_and_support",
+      "answer_parsed": "",
+      "raw_description": "**Reasoning:**\n\nCustomer Success Management (CSM) services and support are specifically designed to guide customers towards successfully using a product or service, overcoming challenges, and ultimately achieving their desired outcomes. The goal of CSM is to ensure that customers derive the maximum benefit and value from their investment. Therefore, the activities performed by CSMs (onboarding, training, proactive check-ins, troubleshooting, strategic guidance) directly contribute to and facilit",
+      "latency_ms": 6195.9,
+      "error": null
+    },
+    {
+      "var1": "customer_value_realization",
+      "var2": "csm_quarterly_business_reviews_qbrs",
+      "answer_parsed": "B",
+      "raw_description": "Reasoning:\n\nQuarterly Business Reviews (QBRs) are a key activity performed by Customer Success Managers (CSMs) with the explicit goal of ensuring and enhancing customer value realization. During a QBR, the CSM and customer typically review progress against goals, discuss product adoption, identify challenges, propose solutions, and align on future strategies. All of these actions are designed to help the customer maximize their benefit and achieve their desired outcomes from the product or servi",
+      "latency_ms": 6693.0,
+      "error": null
+    },
+    {
+      "var1": "customer_value_realization",
+      "var2": "tier_1_metrics",
+      "answer_parsed": "A",
+      "raw_description": "Reasoning:\n\nCustomer value realization refers to the point where a customer experiences and recognizes the benefits or value they expected (or more) from a product or service. This is a fundamental aspect of the customer's experience.\n\nWhen customers realize significant value:\n*   They are more likely to continue using the product/service (improving retention).\n*   They are more likely to recommend it to others (driving acquisition and market share).\n*   They are more likely to upgrade, cross-bu",
+      "latency_ms": 7554.8,
+      "error": null
+    },
+    {
+      "var1": "customer_value_realization",
+      "var2": "business_decision_quality",
+      "answer_parsed": "B",
+      "raw_description": "The most likely cause-and-effect relationship is that business decision quality causes customer value realization.\n\nHere's the reasoning:\n\n*   **Business Decision Quality to Customer Value Realization:** High-quality business decisions are fundamental to creating and delivering value to customers. This includes decisions around product design, service delivery, marketing strategy, pricing, customer support, and operational efficiency. If a business makes good decisions in these areas, it is more",
+      "latency_ms": 7433.4,
+      "error": null
+    },
+    {
+      "var1": "csm_passion",
+      "var2": "customer_satisfaction",
+      "answer_parsed": "A",
+      "raw_description": "The more likely cause-and-effect relationship is that csm_passion causes customer_satisfaction.\n\n**Reasoning:**\n\n1.  **csm_passion causes customer_satisfaction:** A passionate Customer Success Manager (CSM) is more likely to be proactive, empathetic, dedicated, and go the extra mile to understand and meet customer needs. This enthusiasm and commitment directly translate into a better customer experience, more effective problem-solving, and a stronger relationship, all of which contribute signifi",
+      "latency_ms": 7288.4,
+      "error": null
+    },
+    {
+      "var1": "csm_passion",
+      "var2": "customer_advocacy",
+      "answer_parsed": "A",
+      "raw_description": "The more likely cause-and-effect relationship is that csm_passion causes customer_advocacy.\n\n**Reasoning:**\n\n*   **A. csm_passion causes customer_advocacy:** When a Customer Success Manager (CSM) is passionate, they are more likely to:\n    *   Go above and beyond to ensure customer success.\n    *   Proactively identify and address customer needs and pain points.\n    *   Build strong, trust-based relationships with customers.\n    *   Effectively communicate the value of the product/service.\n    *",
+      "latency_ms": 8440.7,
+      "error": null
+    },
+    {
+      "var1": "csm_passion",
+      "var2": "customer_adoption",
+      "answer_parsed": "A",
+      "raw_description": "The more likely cause-and-effect relationship is that csm_passion causes customer_adoption.\n\n**Reasoning:**\n\n1.  **CSM Passion's Impact on Adoption (A):** A Customer Success Manager (CSM) who is passionate about their product or service is more likely to:\n    *   **Engage more deeply:** Proactively reach out, offer support, and understand customer needs.\n    *   **Be more knowledgeable and enthusiastic:** Convey the product's value and benefits more effectively.\n    *   **Be more resilient:** Wo",
+      "latency_ms": 10154.8,
+      "error": null
+    },
+    {
+      "var1": "csm_passion",
+      "var2": "gitlab_use_cases",
+      "answer_parsed": "",
+      "raw_description": "**Reasoning:**\n\n1.  **Understanding the terms:**\n    *   **csm_passion:** Refers to the passion, enthusiasm, and dedication of a Customer Success Manager (CSM). This is an internal attribute or characteristic of an individual.\n    *   **gitlab_use_cases:** Refers to the various ways customers are using the GitLab platform. These are external, observable outcomes or applications of a product.\n\n2.  **Analyzing A (csm_passion causes gitlab_use_cases):**\n    *   A passionate CSM is more likely to be",
+      "latency_ms": 10545.2,
+      "error": null
+    },
+    {
+      "var1": "csm_passion",
+      "var2": "planned_product_features",
+      "answer_parsed": "A",
+      "raw_description": "The more likely cause-and-effect relationship is A.\n\n**Reasoning:**\n\nA Customer Success Manager's (CSM) passion often translates into a deeper understanding of customer needs, pain points, and desires. A passionate CSM is more likely to:\n\n1.  **Actively gather and synthesize customer feedback:** They go the extra mile to listen, observe, and document what customers truly need.\n2.  **Strongly advocate for customers internally:** They become the voice of the customer within the company, pushing pr",
+      "latency_ms": 9324.2,
+      "error": null
+    },
+    {
+      "var1": "csm_passion",
+      "var2": "competitive_considerations",
+      "answer_parsed": "",
+      "raw_description": "Reasoning:\n\n*   **A. csm_passion causes competitive_considerations:** This is unlikely. \"CSM passion\" refers to an individual's intrinsic drive and dedication to their role in customer success. \"Competitive considerations\" refer to external market factors like competitor actions, market share, and pricing strategies. A CSM's passion, while immensely valuable for their company's success and customer retention, does not directly create or fundamentally alter the competitive landscape or the existe",
+      "latency_ms": 9328.1,
+      "error": null
+    },
+    {
+      "var1": "csm_passion",
+      "var2": "tier_1_metrics",
+      "answer_parsed": "",
+      "raw_description": "A CSM's passion (csm_passion) directly influences their motivation, dedication, and the quality of their interactions with customers. A passionate CSM is more likely to:\n*   Proactively address customer needs.\n*   Go above and beyond to ensure customer success.\n*   Build stronger relationships with customers.\n*   Innovate and find solutions to customer problems.\n*   Maintain a positive attitude even when facing challenges.\n\nAll these actions and attitudes directly contribute to better customer o",
+      "latency_ms": 7877.3,
+      "error": null
+    },
+    {
+      "var1": "csm_passion",
+      "var2": "committed_product_features",
+      "answer_parsed": "",
+      "raw_description": "Let's analyze the two proposed causal relationships:\n\n**A. csm_passion causes committed_product_features**\n*   A passionate Customer Success Manager (CSM) is likely to be a strong advocate for customer needs and will provide valuable feedback to the product team. They might passionately articulate the importance of certain features, gather compelling data, and influence the product roadmap.\n*   However, committing to product features is typically a complex decision made by product managers, engi",
+      "latency_ms": 11088.0,
+      "error": null
+    },
+    {
+      "var1": "csm_passion",
+      "var2": "at_risk_product_features",
+      "answer_parsed": "C",
+      "raw_description": "Reasoning:\n\n1.  **Analyze A: csm_passion causes at_risk_product_features**\n    *   \"CSM passion\" refers to the enthusiasm and dedication of Customer Success Managers.\n    *   \"At-risk product features\" refers to functionalities that are problematic, not meeting customer needs, or potentially leading to churn.\n    *   It is highly unlikely that a CSM's passion would *cause* product features to become at-risk. If anything, passionate CSMs are more likely to advocate for customers, identify problem",
+      "latency_ms": 10086.3,
+      "error": null
+    },
+    {
+      "var1": "csm_passion",
+      "var2": "data_quality_and_availability",
+      "answer_parsed": "",
+      "raw_description": "Reasoning:\nLet's analyze both causal directions:\n\n**A. csm_passion causes data_quality_and_availability:**\nA passionate Customer Success Manager (CSM) would likely be more diligent in inputting accurate information, identifying data gaps, and advocating for better data practices. Their attention to detail and commitment to customer success could contribute to improved data quality and availability within their sphere of influence. However, overall data quality and availability are often systemic",
+      "latency_ms": 10082.1,
+      "error": null
+    },
+    {
+      "var1": "csm_passion",
+      "var2": "csm_quarterly_business_reviews_qbrs",
+      "answer_parsed": "B",
+      "raw_description": "Reasoning:\nOption B is more likely. Quarterly Business Reviews (QBRs) provide a structured opportunity for Customer Success Managers (CSMs) to deeply engage with customers, understand their needs, demonstrate value, and see the impact of their work. Successfully helping customers achieve their goals through these reviews, receiving positive feedback, and seeing the direct results of their efforts can be a significant source of job satisfaction and can directly fuel a CSM's passion for their role",
+      "latency_ms": 7339.9,
+      "error": null
+    },
+    {
+      "var1": "csm_passion",
+      "var2": "business_process_strength",
+      "answer_parsed": "",
+      "raw_description": "Let's analyze the likely causal relationships:\n\n*   **`csm_passion`**: Refers to the enthusiasm, dedication, and emotional investment a Customer Success Manager (CSM) has in their role and their customers.\n*   **`business_process_strength`**: Refers to how well-defined, efficient, effective, and robust the operational procedures and systems within a business are (e.g., for customer onboarding, support, renewals, etc.).\n\n**Analyzing the options:**\n\n*   **A. `csm_passion` causes `business_process_",
+      "latency_ms": 10968.4,
+      "error": null
+    },
+    {
+      "var1": "csm_passion",
+      "var2": "csm_services_and_support",
+      "answer_parsed": "B",
+      "raw_description": "**Reasoning:**\n\nThe most likely relationship is that the quality of customer services and support influences customer passion.\n\n*   **Services and Support as a Driver of Passion:** When customers receive excellent service and support, their problems are resolved efficiently, they feel heard and valued, and their overall experience with the company is positive. This positive experience builds trust, satisfaction, and loyalty, which are all precursors to developing \"passion\" for a brand or product",
+      "latency_ms": 7713.6,
+      "error": null
+    },
+    {
+      "var1": "csm_passion",
+      "var2": "business_decision_quality",
+      "answer_parsed": "",
+      "raw_description": "Here's an analysis of the causal relationships:\n\n*   **A. csm_passion causes business_decision_quality:** A Customer Success Manager (CSM) who is passionate about their work is more likely to deeply understand customer needs, proactively identify pain points, advocate for customers internally, and provide valuable, insightful feedback to other departments (product, sales, leadership). This rich, customer-centric input significantly improves the quality and relevance of business decisions, especi",
+      "latency_ms": 11572.5,
+      "error": null
+    },
+    {
+      "var1": "customer_adoption",
+      "var2": "customer_satisfaction",
+      "answer_parsed": "",
+      "raw_description": "Reasoning:\n\n1.  **Customer Adoption:** This typically refers to the act of a customer beginning to use a product or service.\n2.  **Customer Satisfaction:** This refers to a customer's overall happiness and contentment with a product or service, usually based on their experience using it.\n\nLet's evaluate the options:\n\n*   **A. customer_adoption causes customer_satisfaction:** This relationship is highly likely. A customer must first adopt (start using) a product or service before they can form an",
+      "latency_ms": 7840.5,
+      "error": null
+    },
+    {
+      "var1": "customer_adoption",
+      "var2": "planned_product_features",
+      "answer_parsed": "B",
+      "raw_description": "**Reasoning:**\n\n*   **Option B (planned_product_features causes customer_adoption)** is the most direct and fundamental relationship. Companies meticulously plan and develop product features with the explicit goal of attracting customers and driving adoption. The features themselves are the value proposition that customers evaluate when deciding whether to use or purchase a product. Without planned features, there would be no product for customers to adopt.\n*   **Option A (customer_adoption caus",
+      "latency_ms": 7224.5,
+      "error": null
+    },
+    {
+      "var1": "customer_adoption",
+      "var2": "committed_product_features",
+      "answer_parsed": "B",
+      "raw_description": "The more likely cause-and-effect relationship is B.\n\n**Reasoning:**\n\n*   **Committed product features drive customer adoption:** Customers typically decide to adopt a product because of the functionality and value it offers, which are represented by its features. Companies commit to building specific features precisely to attract a target audience and encourage them to use the product. The presence of desirable or unique features is a primary motivator for a customer to choose one product over a",
+      "latency_ms": 7336.9,
+      "error": null
+    },
+    {
+      "var1": "customer_adoption",
+      "var2": "business_process_strength",
+      "answer_parsed": "",
+      "raw_description": "Reasoning:\n\n*   **Business process strength** refers to the efficiency, effectiveness, and reliability of a company's internal operations, systems, and procedures (e.g., product development, marketing, sales, customer service, fulfillment).\n*   **Customer adoption** refers to the rate at which customers choose to use a product or service.\n\nIf a business has strong processes, it is more likely to:\n1.  **Develop high-quality products/services:** Efficient product development and quality assurance ",
+      "latency_ms": 6724.2,
+      "error": null
+    },
+    {
+      "var1": "customer_adoption",
+      "var2": "at_risk_product_features",
+      "answer_parsed": "B",
+      "raw_description": "The most likely cause-and-effect relationship is that problematic product features lead to issues with customer adoption.\n\n**Reasoning:**\n\n*   **at_risk_product_features** implies that certain features of a product are performing poorly, are buggy, are not meeting user needs, or are generally failing to deliver value. These are negative attributes.\n*   If product features are \"at risk\" in this way, it directly impacts the user experience. Customers are less likely to discover, use, or continue u",
+      "latency_ms": 8094.2,
+      "error": null
+    },
+    {
+      "var1": "customer_adoption",
+      "var2": "gitlab_use_cases",
+      "answer_parsed": "",
+      "raw_description": "This is a classic chicken-and-egg scenario with a strong feedback loop, but if forced to choose the more fundamental or encompassing causal direction for *ongoing* and *expanding* use, option A is generally more likely.\n\nHere's the reasoning:\n\n1.  **Initial Adoption often starts with a specific use case (Supporting B):** A customer will typically decide to *adopt* GitLab because they have an existing problem or need that a specific GitLab *use case* can solve (e.g., they need better CI/CD, or a ",
+      "latency_ms": 14062.5,
+      "error": null
+    },
+    {
+      "var1": "customer_adoption",
+      "var2": "data_quality_and_availability",
+      "answer_parsed": "B",
+      "raw_description": "The more likely cause-and-effect relationship is that data quality and availability cause customer adoption.\n\n**Reasoning:**\n\n1.  **Data-Driven Products/Services:** Many modern products and services, especially in technology, rely heavily on data. If the underlying data is of poor quality (inaccurate, incomplete, inconsistent) or unavailable, the product/service itself will perform poorly, deliver inaccurate results, or fail to provide value. Users will quickly abandon such products, leading to ",
+      "latency_ms": 7092.8,
+      "error": null
+    },
+    {
+      "var1": "customer_adoption",
+      "var2": "competitive_considerations",
+      "answer_parsed": "A",
+      "raw_description": "The more likely cause-and-effect relationship is that customer adoption drives competitive considerations.\n\n**Reasoning:**\n\nWhen a product or service experiences significant **customer_adoption**, it means it is gaining market traction, proving successful, and potentially taking market share. This success inherently triggers **competitive_considerations** in several ways:\n\n1.  **For Competitors:** Competitors *must* take notice of a product with high customer adoption. They will analyze its succ",
+      "latency_ms": 8719.7,
+      "error": null
+    },
+    {
+      "var1": "customer_adoption",
+      "var2": "customer_advocacy",
+      "answer_parsed": "",
+      "raw_description": "**Reasoning:**\n\nFor a customer to genuinely advocate for a product or service, they must first have adopted and experienced it. Their personal experience, derived from using the product or service (i.e., customer adoption), forms the basis for their opinion and subsequent advocacy. Without prior adoption, a customer lacks the direct knowledge and experience needed to recommend or praise the product credibly.\n\nWhile it is true that customer advocacy (from existing customers) can lead to new custo",
+      "latency_ms": 13930.3,
+      "error": null
+    },
+    {
+      "var1": "customer_adoption",
+      "var2": "tier_1_metrics",
+      "answer_parsed": "A",
+      "raw_description": "The most likely cause-and-effect relationship is that customer adoption causes tier_1_metrics.\n\nHere's the reasoning:\n*   **Customer adoption** refers to the process by which customers begin to use and engage with a product or service. It's about getting users onboard and actively utilizing what's offered.\n*   **Tier_1_metrics** are the most critical, high-level business outcomes, such as revenue, profit, market share, or overall active user base (e.g., Monthly Active Users for a platform).\n\n1. ",
+      "latency_ms": 9834.6,
+      "error": null
+    },
+    {
+      "var1": "customer_adoption",
+      "var2": "csm_services_and_support",
+      "answer_parsed": "B",
+      "raw_description": "B. csm_services_and_support causes customer_adoption\n\n**Reasoning:**\n\nCustomer Success Management (CSM) services and support are designed and implemented with the explicit goal of helping customers successfully onboard, use, and derive value from a product or service. This directly facilitates and enhances customer adoption.\n\nHere's why:\n*   **Onboarding and Initial Use:** Effective CSM ensures customers are properly onboarded, trained, and guided through the initial stages of using a product. W",
+      "latency_ms": 7738.5,
+      "error": null
+    },
+    {
+      "var1": "gitlab_use_cases",
+      "var2": "planned_product_features",
+      "answer_parsed": "A",
+      "raw_description": "A. gitlab_use_cases causes planned_product_features\n\nReasoning:\nProduct development is heavily influenced by how users actually interact with and utilize a product. \"GitLab use cases\" represent the real-world scenarios, workflows, and problems that users are trying to solve (or are successfully solving) with GitLab. Product teams observe these existing use cases to identify:\n1.  **Pain points:** Where are users struggling? What workarounds are they employing? This indicates a need for new featur",
+      "latency_ms": 6546.8,
+      "error": null
+    },
+    {
+      "var1": "gitlab_use_cases",
+      "var2": "customer_satisfaction",
+      "answer_parsed": "A",
+      "raw_description": "A. gitlab_use_cases causes customer_satisfaction\n\n**Reasoning:**\nWhen customers effectively leverage more GitLab features and functionalities (i.e., they utilize more \"use cases\"), they are generally deriving greater value from the product. This increased value, problem-solving capability, and deeper integration into their workflows directly contribute to a higher level of customer satisfaction. If a customer is getting more utility and successfully addressing more of their needs with GitLab, th",
+      "latency_ms": 7415.6,
+      "error": null
+    },
+    {
+      "var1": "gitlab_use_cases",
+      "var2": "customer_advocacy",
+      "answer_parsed": "A",
+      "raw_description": "The more likely cause-and-effect relationship is that the way a customer uses GitLab (gitlab_use_cases) leads to customer advocacy.\n\n**Reasoning:**\n\nCustomers typically become advocates for a product because they have found it valuable, effective, and beneficial. The \"gitlab_use_cases\" represent the specific ways a customer applies GitLab to solve their problems, streamline their workflows, or achieve their goals (e.g., using GitLab for CI/CD, source code management, security scanning, project m",
+      "latency_ms": 6881.3,
+      "error": null
+    },
+    {
+      "var1": "customer_adoption",
+      "var2": "business_decision_quality",
+      "answer_parsed": "B",
+      "raw_description": "The more likely cause-and-effect relationship is that `business_decision_quality` causes `customer_adoption`.\n\n**Reasoning:**\nBusinesses make decisions regarding their products, services, marketing, pricing, customer experience, and overall strategy. The *quality* of these decisions directly influences how appealing, accessible, valuable, and trustworthy their offerings are to potential customers.\n*   **High-quality business decisions** (e.g., developing an innovative product, executing an effec",
+      "latency_ms": 9606.4,
+      "error": null
+    },
+    {
+      "var1": "customer_adoption",
+      "var2": "csm_quarterly_business_reviews_qbrs",
+      "answer_parsed": "B",
+      "raw_description": "The most likely cause-and-effect relationship is that CSM Quarterly Business Reviews (QBRs) cause customer adoption.\n\n**Reasoning:**\n\n*   **Customer Adoption:** Refers to the extent to which a customer is using a product or service, utilizing its features, and integrating it into their operations. High adoption usually means the customer is realizing value.\n*   **CSM Quarterly Business Reviews (QBRs):** These are structured meetings conducted by a Customer Success Manager (CSM) with a customer, ",
+      "latency_ms": 10813.8,
+      "error": null
+    },
+    {
+      "var1": "gitlab_use_cases",
+      "var2": "committed_product_features",
+      "answer_parsed": "",
+      "raw_description": "**Reasoning:**\n\n*   **gitlab_use_cases** refers to how an organization leverages the GitLab platform across its various functionalities (e.g., source code management, CI/CD, project management, security, etc.). This describes the *process*, *tooling*, and *workflow* adopted by the organization.\n*   **committed_product_features** refers to the features that have been developed, integrated, and committed into a product. This represents the *output* of the software development process.\n\nLet's analy",
+      "latency_ms": 9284.0,
+      "error": null
+    },
+    {
+      "var1": "gitlab_use_cases",
+      "var2": "competitive_considerations",
+      "answer_parsed": "B",
+      "raw_description": "The more likely relationship is that competitive considerations influence how a company chooses to use GitLab.\n\nHere's the reasoning:\n\n1.  **Competitive Considerations causes GitLab Use Cases (Option B):**\n    *   Companies operate in a competitive landscape. They constantly analyze what their competitors are doing, what market demands exist, and what strategic advantages they need to gain or maintain.\n    *   These \"competitive considerations\" (e.g., needing to release software faster, improve ",
+      "latency_ms": 7740.6,
+      "error": null
+    },
+    {
+      "var1": "gitlab_use_cases",
+      "var2": "csm_services_and_support",
+      "answer_parsed": "",
+      "raw_description": "**Reasoning:**\n\nCustomer Success Managers (CSMs) and their services are primarily focused on helping customers maximize the value they get from a product. This often involves:\n1.  **Onboarding and Education:** Guiding customers on how to best use the existing features and discover new ones.\n2.  **Strategic Guidance:** Identifying opportunities for customers to expand their usage of the product to solve more problems or streamline more processes.\n3.  **Troubleshooting and Best Practices:** Ensuri",
+      "latency_ms": 6428.8,
+      "error": null
+    },
+    {
+      "var1": "gitlab_use_cases",
+      "var2": "at_risk_product_features",
+      "answer_parsed": "B",
+      "raw_description": "The most likely cause-and-effect relationship is B.\n\n**Reasoning:**\n\n*   **at_risk_product_features**: These are features that are failing to meet their objectives, perhaps due to low usage, poor user satisfaction, numerous bugs, or a lack of alignment with user needs.\n*   **gitlab_use_cases**: These describe how users actually interact with and leverage GitLab to achieve their goals.\n\nIf a product feature is \"at risk,\" it means it's likely not providing value or is difficult to use. This direct",
+      "latency_ms": 13143.7,
+      "error": null
+    },
+    {
+      "var1": "gitlab_use_cases",
+      "var2": "csm_quarterly_business_reviews_qbrs",
+      "answer_parsed": "A",
+      "raw_description": "The most likely relationship is that \"gitlab_use_cases\" cause \"csm_quarterly_business_reviews_qbrs.\"\n\nHere's the reasoning:\n1.  **gitlab_use_cases:** These refer to how a customer is actively using the GitLab product \u2013 the features they adopt, the workflows they implement, and the value they derive.\n2.  **csm_quarterly_business_reviews_qbrs:** These are formal meetings where a Customer Success Manager (CSM) reviews the customer's progress, value realization, challenges, and future plans with the",
+      "latency_ms": 8575.4,
+      "error": null
+    },
+    {
+      "var1": "gitlab_use_cases",
+      "var2": "business_process_strength",
+      "answer_parsed": "A",
+      "raw_description": "The more likely cause-and-effect relationship is that the effective use of GitLab (gitlab_use_cases) leads to stronger business processes.\n\n**Reasoning:**\n\nGitLab is an integrated platform designed to cover the entire software development lifecycle (SDLC), including planning, source code management, CI/CD, security, and monitoring.\n\n*   **A. gitlab_use_cases causes business_process_strength:** When an organization effectively implements and utilizes GitLab's features (its \"use cases\"), such as a",
+      "latency_ms": 9718.1,
+      "error": null
+    },
+    {
+      "var1": "gitlab_use_cases",
+      "var2": "tier_1_metrics",
+      "answer_parsed": "A",
+      "raw_description": "The most likely cause-and-effect relationship is that increasing GitLab use cases leads to improved tier_1_metrics.\n\n**Reasoning:**\n\n1.  **gitlab_use_cases:** This refers to the various functionalities within GitLab that an organization adopts and actively uses (e.g., using GitLab for source code management, CI/CD, security scanning, project management, release orchestration, etc.). The more use cases a customer adopts, the deeper GitLab is integrated into their operations.\n\n2.  **tier_1_metrics",
+      "latency_ms": 9958.3,
+      "error": null
+    },
+    {
+      "var1": "customer_satisfaction",
+      "var2": "customer_advocacy",
+      "answer_parsed": "A",
+      "raw_description": "The most likely cause-and-effect relationship is that customer satisfaction leads to customer advocacy.\n\n**Reasoning:**\n\n*   **Customer Satisfaction** refers to a customer's overall happiness and contentment with a product, service, or company. It's an internal state resulting from their experience meeting or exceeding expectations.\n*   **Customer Advocacy** refers to a customer's willingness to actively recommend, promote, or defend a company, product, or service to others (e.g., through word-o",
+      "latency_ms": 8313.7,
+      "error": null
+    },
+    {
+      "var1": "customer_satisfaction",
+      "var2": "planned_product_features",
+      "answer_parsed": "",
+      "raw_description": "Reasoning:\nThe most direct and primary cause-and-effect relationship in this scenario is that the features a company plans and implements directly impact customer satisfaction.\n\n1.  **Planned product features lead to developed products:** A company decides what features to build. These decisions are then translated into actual product features.\n2.  **Developed products are experienced by customers:** Customers use these features, interact with them, and form opinions based on their utility, qual",
+      "latency_ms": 7801.8,
+      "error": null
+    },
+    {
+      "var1": "customer_satisfaction",
+      "var2": "committed_product_features",
+      "answer_parsed": "",
+      "raw_description": "The more likely cause-and-effect relationship is that committed product features cause customer satisfaction.\n\nHere's the reasoning:\n\n1.  **Committed product features cause customer satisfaction (B):** Companies design and implement product features with the explicit goal of meeting customer needs, solving their problems, and providing value. When these features are well-executed, relevant, and perform as expected, they directly contribute to a positive customer experience and, consequently, hig",
+      "latency_ms": 6614.4,
+      "error": null
+    },
+    {
+      "var1": "gitlab_use_cases",
+      "var2": "business_decision_quality",
+      "answer_parsed": "",
+      "raw_description": "Reasoning:\n\n1.  **Consider A: gitlab_use_cases causes business_decision_quality**\n    *   Effective and extensive use of GitLab can provide several benefits that contribute to better business decisions. For example, GitLab's integrated platform can offer improved visibility into project progress, faster software delivery, better collaboration among teams, and enhanced security insights. These factors can lead to more informed, timely, and data-driven decisions. So, there is a plausible link here",
+      "latency_ms": 12833.3,
+      "error": null
+    },
+    {
+      "var1": "customer_satisfaction",
+      "var2": "at_risk_product_features",
+      "answer_parsed": "B",
+      "raw_description": "**Reasoning:**\n\n*   **\"At-risk product features\"** typically refers to features that are buggy, unstable, poorly performing, difficult to use, or failing to meet user needs effectively. These issues directly impact the user experience.\n*   When customers encounter problems, frustrations, or limitations due to **at-risk product features**, their overall experience with the product deteriorates.\n*   A negative user experience, in turn, leads to **lower customer satisfaction**. Conversely, well-fun",
+      "latency_ms": 5541.7,
+      "error": null
+    },
+    {
+      "var1": "customer_satisfaction",
+      "var2": "business_process_strength",
+      "answer_parsed": "B",
+      "raw_description": "The more likely cause-and-effect relationship is that strong business processes lead to customer satisfaction.\n\n**Reasoning:**\n\n*   **Business process strength** refers to the efficiency, effectiveness, and reliability of a company's internal operations (e.g., product development, service delivery, customer support, order fulfillment, quality control).\n*   **Customer satisfaction** is a measure of how well a company's products or services meet or exceed customer expectations.\n\nWhen a business ha",
+      "latency_ms": 5759.2,
+      "error": null
+    },
+    {
+      "var1": "gitlab_use_cases",
+      "var2": "data_quality_and_availability",
+      "answer_parsed": "",
+      "raw_description": "The question asks which cause-and-effect relationship is more likely between \"gitlab_use_cases\" and \"data_quality_and_availability\".\n\nLet's analyze both directions:\n\n**A. gitlab_use_cases causes data_quality_and_availability**\nIf an organization effectively uses GitLab (e.g., for robust CI/CD, issue tracking, version control, security scanning), it can certainly lead to better data quality and availability for *data related to the software development lifecycle*. For instance, consistent CI/CD p",
+      "latency_ms": 15519.2,
+      "error": null
+    },
+    {
+      "var1": "customer_satisfaction",
+      "var2": "competitive_considerations",
+      "answer_parsed": "",
+      "raw_description": "Let's analyze the relationship between these two concepts:\n\n*   **Competitive considerations** refers to a company's awareness of, and strategic response to, its competitors' actions, offerings, pricing, and market position.\n*   **Customer satisfaction** refers to how happy customers are with a company's products, services, and overall experience.\n\n**Reasoning:**\n\n*   **A. customer_satisfaction causes competitive_considerations:** While a drop in customer satisfaction might *trigger* a company t",
+      "latency_ms": 7362.3,
+      "error": null
+    },
+    {
+      "var1": "customer_satisfaction",
+      "var2": "data_quality_and_availability",
+      "answer_parsed": "B",
+      "raw_description": "Reasoning:\n\n*   **B. data_quality_and_availability causes customer_satisfaction:** This relationship is highly likely. When a company has high-quality and readily available data, it can:\n    *   **Provide better customer service:** Support agents can quickly access accurate customer histories, preferences, and previous interactions, leading to faster, more personalized, and more effective problem resolution.\n    *   **Ensure accurate product/service delivery:** Accurate data on inventory, custom",
+      "latency_ms": 6405.4,
+      "error": null
+    },
+    {
+      "var1": "customer_satisfaction",
+      "var2": "business_decision_quality",
+      "answer_parsed": "B",
+      "raw_description": "The most likely cause-and-effect relationship is that the quality of business decisions directly influences customer satisfaction.\n\nHere's the reasoning:\n\n*   **Business decisions lead to actions and outcomes:** When a business makes good decisions (e.g., investing in product quality, improving customer service, setting fair prices, efficient operations), these decisions manifest as tangible improvements in the customer experience.\n*   **Improved customer experience leads to satisfaction:** Cust",
+      "latency_ms": 5963.0,
+      "error": null
+    },
+    {
+      "var1": "customer_satisfaction",
+      "var2": "csm_quarterly_business_reviews_qbrs",
+      "answer_parsed": "",
+      "raw_description": "Reasoning:\nQuarterly Business Reviews (QBRs) are a proactive strategy employed by Customer Success Managers (CSMs) to engage with customers. The primary goals of QBRs typically include:\n1.  Reviewing past performance and progress towards customer goals.\n2.  Aligning on future strategies and objectives.\n3.  Providing value, insights, and strategic guidance.\n4.  Addressing any challenges, concerns, or roadblocks the customer might be facing.\n5.  Demonstrating the value of the product/service and t",
+      "latency_ms": 5946.1,
+      "error": null
+    },
+    {
+      "var1": "customer_satisfaction",
+      "var2": "csm_services_and_support",
+      "answer_parsed": "B",
+      "raw_description": "**Reasoning:**\n\nCustomer Success Management (CSM) services and support are implemented by companies with the explicit goal of helping customers achieve their desired outcomes, derive value from products/services, and resolve any issues they encounter. These services include proactive engagement, training, troubleshooting, and ongoing assistance.\n\nWhen customers receive excellent, proactive, and effective support and guidance through CSM, they are more likely to have a positive experience, overco",
+      "latency_ms": 5545.6,
+      "error": null
+    },
+    {
+      "var1": "customer_satisfaction",
+      "var2": "tier_1_metrics",
+      "answer_parsed": "B",
+      "raw_description": "The most likely cause-and-effect relationship is that `tier_1_metrics` cause `customer_satisfaction`.\n\nHere's the reasoning:\n\n`Tier_1_metrics` typically refer to the primary, high-level operational and performance indicators of a business, product, or service. These could include things like:\n*   Product uptime/reliability\n*   Speed and performance\n*   Defect rates/bug counts\n*   Feature adoption rates\n*   Customer service response times\n*   Order fulfillment rates\n*   Core conversion rates\n\n`Cu",
+      "latency_ms": 9070.2,
+      "error": null
+    },
+    {
+      "var1": "customer_advocacy",
+      "var2": "committed_product_features",
+      "answer_parsed": "B",
+      "raw_description": "Reasoning:\n\nOption B is more likely. Here's why:\n\nWhen a company publicly *commits* to delivering specific product features, it signals responsiveness, vision, and a dedication to improving the product. When these committed features are then delivered (and ideally, are valuable and well-implemented), it directly enhances the customer experience, addresses their needs, and builds trust. Satisfied customers who feel heard and see the product evolving in a positive direction are much more likely to",
+      "latency_ms": 7579.8,
+      "error": null
+    },
+    {
+      "var1": "customer_advocacy",
+      "var2": "data_quality_and_availability",
+      "answer_parsed": "B",
+      "raw_description": "The relationship where **data quality and availability causes customer advocacy** is much more likely.\n\nHere's why:\n\n*   **Data Quality and Availability causes Customer Advocacy:**\n    *   **Personalization & Relevance:** When a company has high-quality, readily available data about its customers (preferences, purchase history, interactions), it can offer personalized experiences, relevant product recommendations, and targeted communications. This makes customers feel understood and valued, sign",
+      "latency_ms": 7243.4,
+      "error": null
+    },
+    {
+      "var1": "customer_advocacy",
+      "var2": "competitive_considerations",
+      "answer_parsed": "",
+      "raw_description": "Let's break down these two concepts:\n\n*   **Customer Advocacy:** This refers to customers actively promoting a company, product, or service through word-of-mouth, reviews, or other means. It's a result of high customer satisfaction, loyalty, and a strong positive experience.\n*   **Competitive Considerations:** This involves a company's strategic analysis of its competitors, including their strengths, weaknesses, strategies, market share, and offerings. It's about understanding the competitive la",
+      "latency_ms": 9896.6,
+      "error": null
+    },
+    {
+      "var1": "customer_advocacy",
+      "var2": "planned_product_features",
+      "answer_parsed": "",
+      "raw_description": "Let's analyze the relationship between `customer_advocacy` and `planned_product_features`.\n\n1.  **`customer_advocacy`**: This refers to customers actively promoting a product or brand, recommending it to others, and speaking positively about it. It is generally a *result* of a positive customer experience and high satisfaction with the product.\n\n2.  **`planned_product_features`**: These are the specific functionalities, improvements, or attributes that a company intends to build and integrate in",
+      "latency_ms": 12147.3,
+      "error": null
+    },
+    {
+      "var1": "customer_advocacy",
+      "var2": "business_process_strength",
+      "answer_parsed": "",
+      "raw_description": "Let's analyze these relationships:\n\n*   **Business Process Strength:** This refers to the efficiency, effectiveness, and reliability of a company's internal operations (e.g., product development, quality control, customer service protocols, order fulfillment, supply chain management). Strong processes lead to consistent results, fewer errors, and smoother operations.\n*   **Customer Advocacy:** This refers to customers actively promoting a business, product, or service through word-of-mouth, posi",
+      "latency_ms": 9899.3,
+      "error": null
+    },
+    {
+      "var1": "customer_advocacy",
+      "var2": "csm_quarterly_business_reviews_qbrs",
+      "answer_parsed": "B",
+      "raw_description": "**Reasoning:**\n\nCSM Quarterly Business Reviews (QBRs) are a proactive engagement strategy employed by Customer Success Managers. Their primary purpose is to ensure customers are realizing value from a product or service, address any challenges, align on future goals, and strengthen the customer relationship.\n\nWhen QBRs are conducted effectively, they lead to:\n*   Increased customer satisfaction due to issues being addressed and value being demonstrated.\n*   Stronger trust in the vendor and the C",
+      "latency_ms": 7123.5,
+      "error": null
+    },
+    {
+      "var1": "customer_advocacy",
+      "var2": "tier_1_metrics",
+      "answer_parsed": "A",
+      "raw_description": "Reasoning:\nIn a business context, customer advocacy refers to customers actively promoting a company, product, or service. This often stems from high levels of satisfaction, loyalty, and a positive customer experience. Tier 1 metrics are typically the most critical, high-level business performance indicators, such as revenue, profit, customer acquisition cost, customer lifetime value, market share, sales volume, and customer retention rate.\n\nLet's analyze the proposed relationships:\n\n*   **A. cu",
+      "latency_ms": 8622.6,
+      "error": null
+    },
+    {
+      "var1": "customer_advocacy",
+      "var2": "business_decision_quality",
+      "answer_parsed": "B",
+      "raw_description": "The most likely cause-and-effect relationship is that the quality of business decisions influences customer advocacy.\n\nHere's the reasoning:\n\n1.  **Business Decision Quality causes Customer Advocacy:** When a business makes high-quality decisions, these decisions typically lead to positive outcomes for customers. For example, decisions to invest in product quality, improve customer service, offer competitive pricing, or innovate to meet customer needs will result in better products, services, an",
+      "latency_ms": 8729.0,
+      "error": null
+    },
+    {
+      "var1": "planned_product_features",
+      "var2": "committed_product_features",
+      "answer_parsed": "",
+      "raw_description": "Reasoning:\n\n1.  **Planned Product Features:** This refers to the initial phase of ideation, strategizing, and outlining what features a product *could* or *should* have. It involves research, market analysis, user feedback, and internal brainstorming to create a roadmap or backlog of potential features.\n2.  **Committed Product Features:** This refers to the set of features that have been officially decided upon for development within a specific timeframe (e.g., a sprint, a release cycle). Resour",
+      "latency_ms": 5517.7,
+      "error": null
+    },
+    {
+      "var1": "customer_advocacy",
+      "var2": "at_risk_product_features",
+      "answer_parsed": "",
+      "raw_description": "**Reasoning:**\n\n1.  **Analyze A: customer_advocacy causes at_risk_product_features.** Customer advocacy means customers are actively supporting and promoting a product, usually because they are satisfied with it. It is highly improbable that positive customer sentiment and support would directly lead to product features becoming problematic, buggy, or \"at risk.\" In fact, strong advocacy often indicates that features are well-received, or helps a company identify and address issues before they be",
+      "latency_ms": 11736.0,
+      "error": null
+    },
+    {
+      "var1": "customer_advocacy",
+      "var2": "csm_services_and_support",
+      "answer_parsed": "B",
+      "raw_description": "The more likely cause-and-effect relationship is that csm_services_and_support causes customer_advocacy.\n\n**Reasoning:**\n\n*   **csm_services_and_support** (Customer Success Management services and support) refers to the proactive efforts a company makes to help its customers achieve their desired outcomes while using their product or service. This includes onboarding, training, technical assistance, strategic guidance, and problem-solving.\n*   **customer_advocacy** is when customers actively pro",
+      "latency_ms": 7440.6,
+      "error": null
+    },
+    {
+      "var1": "planned_product_features",
+      "var2": "at_risk_product_features",
+      "answer_parsed": "A",
+      "raw_description": "Reasoning:\nFor a product feature to be considered \"at risk,\" it must first exist as a concept that is intended to be built or released. This intention is captured in the planning phase. You cannot identify a feature as \"at risk\" if it hasn't been planned in the first place. The act of planning a feature creates the item that can then be assessed for potential risks. Various factors encountered during or after planning (e.g., complexity, resource constraints, technical challenges, dependencies) c",
+      "latency_ms": 6938.8,
+      "error": null
+    },
+    {
+      "var1": "planned_product_features",
+      "var2": "competitive_considerations",
+      "answer_parsed": "",
+      "raw_description": "Reasoning:\nIn product development and business strategy, competitive considerations are a crucial input for defining what a product should be. Companies analyze their competitors' offerings, market positioning, strengths, and weaknesses to identify opportunities, differentiate their product, meet market expectations, or gain a competitive edge. This analysis directly informs the features that are planned for a new product or an update to an existing one. For example, if competitors have a certai",
+      "latency_ms": 6014.2,
+      "error": null
+    },
+    {
+      "var1": "planned_product_features",
+      "var2": "csm_quarterly_business_reviews_qbrs",
+      "answer_parsed": "B",
+      "raw_description": "Reasoning:\nPlanned product features are the features a product team intends to build. CSM Quarterly Business Reviews (QBRs) are meetings where Customer Success Managers discuss product usage, value, and challenges with customers.\n\n*   **A. planned_product_features causes csm_quarterly_business_reviews_qbrs:** While planned or new features might be *discussed* during QBRs, the *planning* of these features does not directly *cause* the QBRs to happen. QBRs are a regular, scheduled part of customer",
+      "latency_ms": 6134.5,
+      "error": null
+    },
+    {
+      "var1": "planned_product_features",
+      "var2": "data_quality_and_availability",
+      "answer_parsed": "B",
+      "raw_description": "**Reasoning:**\n\nB. **data_quality_and_availability causes planned_product_features** is more likely.\n\n*   **How data influences planning:** High-quality and available data (e.g., user analytics, market research, bug reports, system performance metrics, customer feedback) is crucial for product managers and development teams to make informed decisions about which features to plan, prioritize, and build. Good data helps identify user needs, validate assumptions, assess market demand, understand te",
+      "latency_ms": 7101.5,
+      "error": null
+    },
+    {
+      "var1": "committed_product_features",
+      "var2": "competitive_considerations",
+      "answer_parsed": "",
+      "raw_description": "Competitive considerations are a primary driver for product development decisions, including which features to prioritize and commit to. Companies constantly analyze their competitors to identify market gaps, differentiate their offerings, or respond to new threats. This analysis directly informs what features they decide to build into their products.\n\nConversely, while the *existence* of certain product features might *impact* the competitive landscape (e.g., forcing competitors to react), the ",
+      "latency_ms": 5862.8,
+      "error": null
+    },
+    {
+      "var1": "committed_product_features",
+      "var2": "at_risk_product_features",
+      "answer_parsed": "",
+      "raw_description": "Reasoning:\nThe concept of a \"feature being at risk\" inherently implies that there was a prior expectation or commitment for that feature to be delivered. You can only identify a feature as \"at risk\" of not being delivered if there was an initial plan or commitment to deliver it. If a feature was never committed, its non-delivery wouldn't typically be classified as \"at risk\" in the context of failing to meet a target.\n\nWhen a team commits to product features, they establish a goal or a promise. D",
+      "latency_ms": 6547.6,
+      "error": null
+    },
+    {
+      "var1": "planned_product_features",
+      "var2": "csm_services_and_support",
+      "answer_parsed": "",
+      "raw_description": "Reasoning:\nThe relationship between planned product features and CSM (Customer Success Management) services and support is often cyclical, forming a feedback loop. However, one direction is a more direct and foundational cause.\n\n*   **A. planned_product_features causes csm_services_and_support:** When new product features are planned and developed, the Customer Success team needs to understand these features to effectively support customers. This includes creating new documentation, training CSM",
+      "latency_ms": 6570.3,
+      "error": null
+    },
+    {
+      "var1": "planned_product_features",
+      "var2": "business_decision_quality",
+      "answer_parsed": "B",
+      "raw_description": "The more likely cause-and-effect relationship is that business decision quality influences planned product features.\n\nHere's why:\n\n1.  **Business Decision Quality as a Precursor:** Before a company can even begin to plan product features, a multitude of strategic and operational business decisions must be made. These include decisions about market target, budget, strategic goals, competitive analysis, resource allocation, and problem identification. The quality of these foundational business dec",
+      "latency_ms": 8603.2,
+      "error": null
+    },
+    {
+      "var1": "planned_product_features",
+      "var2": "business_process_strength",
+      "answer_parsed": "B",
+      "raw_description": "Let's analyze the relationship between these two concepts:\n\n*   **Planned product features:** These are the specific functionalities, capabilities, and enhancements that a product is designed to have in the future. They are the *output* of strategic thinking, market research, customer feedback analysis, and internal innovation.\n*   **Business process strength:** This refers to the efficiency, effectiveness, robustness, and maturity of an organization's internal operations. This includes processe",
+      "latency_ms": 9165.1,
+      "error": null
+    },
+    {
+      "var1": "planned_product_features",
+      "var2": "tier_1_metrics",
+      "answer_parsed": "A",
+      "raw_description": "The more likely cause-and-effect relationship is A.\n\n**Reasoning:**\n\n*   **Planned product features** are actions or interventions that a product team decides to implement. These features are designed with specific goals in mind.\n*   **Tier 1 metrics** are high-level performance indicators (e.g., user engagement, conversion rates, revenue, retention) that measure the success or failure of a product or business.\n\n**Why A is more likely:**\nProduct teams strategically plan and develop features *wit",
+      "latency_ms": 9189.0,
+      "error": null
+    },
+    {
+      "var1": "committed_product_features",
+      "var2": "business_process_strength",
+      "answer_parsed": "B",
+      "raw_description": "Option B is more likely.\n\n**Reasoning:**\n\n*   **Business process strength** refers to the efficiency, effectiveness, and reliability of a company's internal operations, including product development, project management, resource allocation, and strategic planning.\n*   **Committed product features** refers to the specific functionalities or characteristics that a company has promised to deliver in its products, often outlined in a product roadmap or release plan.\n\nHere's why B is more likely:\n\n1.",
+      "latency_ms": 7674.9,
+      "error": null
+    },
+    {
+      "var1": "committed_product_features",
+      "var2": "tier_1_metrics",
+      "answer_parsed": "A",
+      "raw_description": "**Reasoning:**\n\n*   **Committed product features** represent the specific functionalities or improvements a product team decides to build and implement. These are actions or inputs.\n*   **Tier 1 metrics** are the most critical Key Performance Indicators (KPIs) for a product or business, reflecting its success in areas like user engagement, retention, revenue, etc. These are outcomes.\n\nThe primary goal of building and releasing product features is to improve business outcomes, which are measured ",
+      "latency_ms": 6677.4,
+      "error": null
+    },
+    {
+      "var1": "committed_product_features",
+      "var2": "business_decision_quality",
+      "answer_parsed": "",
+      "raw_description": "The most likely cause-and-effect relationship is that the quality of business decisions influences the commitment to product features.\n\n**Reasoning:**\n\n*   **Business decision quality** refers to the effectiveness, strategic alignment, and foresight involved in making choices for a company. High-quality business decisions typically stem from thorough analysis, understanding of market needs, strategic planning, and resource assessment.\n*   **Committed product features** refers to the specific fun",
+      "latency_ms": 7305.6,
+      "error": null
+    },
+    {
+      "var1": "committed_product_features",
+      "var2": "csm_quarterly_business_reviews_qbrs",
+      "answer_parsed": "",
+      "raw_description": "Reasoning:\nCustomer Success Managers (CSMs) conduct Quarterly Business Reviews (QBRs) to check in with customers, review their progress, address any issues, and understand their future needs and challenges. During these QBRs, customers often provide feedback on the product, express pain points, and request new features or improvements. This customer feedback, collected and communicated by CSMs, is a vital input for product management. Product teams then use this feedback, along with market resea",
+      "latency_ms": 7378.6,
+      "error": null
+    },
+    {
+      "var1": "committed_product_features",
+      "var2": "data_quality_and_availability",
+      "answer_parsed": "B",
+      "raw_description": "The quality and availability of data are fundamental inputs for strategic decision-making in product development.\n\n*   **B. data_quality_and_availability causes committed_product_features:**\n    When a company has high-quality and available data (e.g., user analytics, market research, system performance metrics), product teams are better equipped to:\n    1.  **Identify user needs and pain points:** Data reveals how users interact with the product.\n    2.  **Validate ideas and hypotheses:** Data ",
+      "latency_ms": 9139.8,
+      "error": null
+    },
+    {
+      "var1": "at_risk_product_features",
+      "var2": "data_quality_and_availability",
+      "answer_parsed": "",
+      "raw_description": "Reasoning:\nPoor data quality and availability directly hinder the ability of product teams to understand how their features are performing, identify bugs, analyze user behavior, and make informed decisions.\n*   If data is inaccurate or incomplete, teams might not realize that a feature is failing or performing poorly.\n*   If data is unavailable, they cannot monitor the health of features, track adoption, or assess risks.\n*   This lack of insight and information directly leads to product features",
+      "latency_ms": 6516.2,
+      "error": null
+    },
+    {
+      "var1": "at_risk_product_features",
+      "var2": "competitive_considerations",
+      "answer_parsed": "",
+      "raw_description": "",
+      "latency_ms": 7839.9,
+      "error": null
+    },
+    {
+      "var1": "at_risk_product_features",
+      "var2": "tier_1_metrics",
+      "answer_parsed": "",
+      "raw_description": "Reasoning:\n\"At-risk product features\" refers to features that are buggy, poorly designed, inefficient, or otherwise fail to meet user needs or business objectives. These issues directly impact how users interact with the product and their overall satisfaction.\n\n\"Tier 1 metrics\" are key performance indicators (KPIs) that measure the overall success and health of a product or business (e.g., user engagement, retention, conversion rates, customer satisfaction, revenue).\n\nIf product features are \"at",
+      "latency_ms": 6923.0,
+      "error": null
+    },
+    {
+      "var1": "committed_product_features",
+      "var2": "csm_services_and_support",
+      "answer_parsed": "B",
+      "raw_description": "Reasoning:\n\n1.  **Understanding \"committed_product_features\"**: This refers to the specific functionalities or improvements in a product that a company has decided to build and deliver, often based on a roadmap, customer feedback, market analysis, and strategic goals.\n2.  **Understanding \"csm_services_and_support\"**: This encompasses the activities of Customer Success Managers (CSMs), which include onboarding, training, ongoing support, collecting feedback, ensuring customer adoption and value r",
+      "latency_ms": 8803.9,
+      "error": null
+    },
+    {
+      "var1": "at_risk_product_features",
+      "var2": "business_process_strength",
+      "answer_parsed": "",
+      "raw_description": "Reasoning:\nLet's analyze each option:\n\n*   **A. at_risk_product_features causes business_process_strength:** This is unlikely. If a product has \"at-risk features,\" it suggests a problem or flaw. While encountering such issues might prompt a business to re-evaluate and improve its processes, the \"at-risk features\" themselves don't directly *cause* the strength of business processes. In fact, they might highlight *weaknesses* in existing processes that allowed such features to develop or ship.\n\n* ",
+      "latency_ms": 9316.4,
+      "error": null
+    },
+    {
+      "var1": "at_risk_product_features",
+      "var2": "csm_quarterly_business_reviews_qbrs",
+      "answer_parsed": "",
+      "raw_description": "The more likely cause-and-effect relationship is that the existence of at-risk product features influences the content and necessity of Quarterly Business Reviews (QBRs).\n\nHere's the reasoning:\n*   **At-risk product features** refer to functionalities that are problematic, not meeting customer needs, or causing dissatisfaction. These issues directly impact customer success and potentially lead to churn.\n*   **CSM Quarterly Business Reviews (QBRs)** are formal meetings where Customer Success Mana",
+      "latency_ms": 6173.4,
+      "error": null
+    },
+    {
+      "var1": "at_risk_product_features",
+      "var2": "csm_services_and_support",
+      "answer_parsed": "A",
+      "raw_description": "The most likely cause-and-effect relationship is that at-risk product features necessitate increased CSM services and support.\n\n**Reasoning:**\n*   **At-risk product features** imply that certain aspects of a product are performing poorly, leading to customer dissatisfaction, frustration, or potential churn. These are problems that customers are likely encountering.\n*   **CSM (Customer Success Manager) services and support** are specifically designed to address customer issues, mitigate risks, im",
+      "latency_ms": 6375.2,
+      "error": null
+    },
+    {
+      "var1": "at_risk_product_features",
+      "var2": "business_decision_quality",
+      "answer_parsed": "B",
+      "raw_description": "**Reasoning:**\n\nLet's analyze both directions:\n\n*   **A. at_risk_product_features causes business_decision_quality:** If a product has features that are at risk (e.g., security vulnerabilities, poor performance, high maintenance cost), this often *reveals* that past business decisions were of low quality. However, the *existence* of these features doesn't directly *cause* the quality of *future* business decisions. While discovering at-risk features might necessitate new decisions, the quality o",
+      "latency_ms": 8943.0,
+      "error": null
+    },
+    {
+      "var1": "competitive_considerations",
+      "var2": "business_process_strength",
+      "answer_parsed": "A",
+      "raw_description": "**Reasoning:**\n\n*   **Competitive Considerations:** These involve monitoring rivals, understanding market dynamics, and strategizing to gain an advantage or mitigate threats.\n*   **Business Process Strength:** This refers to the efficiency, effectiveness, and robustness of a company's internal operations (e.g., manufacturing, supply chain, customer service, R&D).\n\nIt is more likely that **competitive considerations cause business process strength**. When a company observes that competitors are f",
+      "latency_ms": 7440.7,
+      "error": null
+    },
+    {
+      "var1": "competitive_considerations",
+      "var2": "data_quality_and_availability",
+      "answer_parsed": "B",
+      "raw_description": "A. competitive_considerations causes data_quality_and_availability: While competitive pressure can *motivate* a company to invest in improving its data quality and availability, the competitive considerations themselves do not directly *cause* the data to be of high quality or readily available. It's the *response* to competitive considerations (e.g., investing in data infrastructure, analytics teams) that leads to changes in data quality and availability.\n\nB. data_quality_and_availability cause",
+      "latency_ms": 7831.8,
+      "error": null
+    },
+    {
+      "var1": "competitive_considerations",
+      "var2": "csm_services_and_support",
+      "answer_parsed": "A",
+      "raw_description": "A. competitive_considerations causes csm_services_and_support\n\n**Reasoning:**\nCompetitive considerations refer to a company's analysis of its competitors' strengths, weaknesses, offerings, and market position. This analysis often serves as a strategic input for a company's own business decisions. If a company observes that its competitors are providing superior customer success management (CSM) services and support, or if the market trend indicates that strong customer success is a key different",
+      "latency_ms": 6795.2,
+      "error": null
+    },
+    {
+      "var1": "competitive_considerations",
+      "var2": "business_decision_quality",
+      "answer_parsed": "A",
+      "raw_description": "The most likely cause-and-effect relationship is that competitive considerations influence the quality of business decisions.\n\n**Reasoning:**\n\n*   **A. competitive_considerations causes business_decision_quality:** When a business actively analyzes and accounts for its competitors (their strategies, strengths, weaknesses, market position, pricing, products, etc.), it gains crucial information and context. This information allows for more informed, strategic, and realistic decision-making, which ",
+      "latency_ms": 9031.8,
+      "error": null
+    },
+    {
+      "var1": "competitive_considerations",
+      "var2": "tier_1_metrics",
+      "answer_parsed": "A",
+      "raw_description": "Reasoning:\nCompetitive considerations refer to a company's strategic decisions and actions taken in response to or in anticipation of its competitors. These can include pricing strategies, product differentiation, marketing campaigns, market entry/exit decisions, and innovation efforts. The primary goal of these competitive strategies is to achieve specific business objectives, which are measured by tier_1_metrics (e.g., revenue, market share, profitability, customer acquisition).\n\nTherefore, a ",
+      "latency_ms": 9373.7,
+      "error": null
+    },
+    {
+      "var1": "competitive_considerations",
+      "var2": "csm_quarterly_business_reviews_qbrs",
+      "answer_parsed": "",
+      "raw_description": "Here's a breakdown of the causal relationship:\n\n*   **csm_quarterly_business_reviews_qbrs:** These are regular meetings where Customer Success Managers review client performance, discuss goals, and gather feedback.\n*   **competitive_considerations:** This refers to the process of analyzing what competitors are doing and how it impacts your business strategy.\n\nLet's evaluate the options:\n\n*   **A. competitive_considerations causes csm_quarterly_business_reviews_qbrs:** While competitive pressure ",
+      "latency_ms": 9607.0,
+      "error": null
+    },
+    {
+      "var1": "business_process_strength",
+      "var2": "csm_quarterly_business_reviews_qbrs",
+      "answer_parsed": "B",
+      "raw_description": "The more likely relationship is that CSM Quarterly Business Reviews (QBRs) cause improvements in business process strength.\n\nHere's the reasoning:\n*   **A. business_process_strength causes csm_quarterly_business_reviews_qbrs:** While strong business processes might enable QBRs to be conducted more efficiently or effectively (e.g., easier access to data, smoother scheduling), the existence of QBRs themselves is a strategic decision for customer success and retention, not directly caused by the st",
+      "latency_ms": 6217.7,
+      "error": null
+    },
+    {
+      "var1": "business_process_strength",
+      "var2": "tier_1_metrics",
+      "answer_parsed": "A",
+      "raw_description": "The more likely cause-and-effect relationship is that business process strength causes tier 1 metrics.\n\n**Reasoning:**\n\n*   **Business Process Strength causes Tier 1 Metrics (A):** Strong, efficient, and well-defined business processes are the foundational elements that drive positive business outcomes.\n    *   **Example 1 (Sales):** A robust sales process (from lead generation to conversion, with clear stages, training, and tools) directly leads to higher sales revenue and customer acquisition ",
+      "latency_ms": 7862.7,
+      "error": null
+    },
+    {
+      "var1": "data_quality_and_availability",
+      "var2": "tier_1_metrics",
+      "answer_parsed": "",
+      "raw_description": "**Reasoning:**\n\nThe quality and availability of data directly impact the reliability and accuracy of any metrics derived from it, especially critical \"tier 1\" metrics. If the underlying data is inaccurate, incomplete, inconsistent, or simply not available, then the tier 1 metrics calculated from that data will be flawed, misleading, or impossible to generate.\n\nConversely, while looking at tier 1 metrics might *reveal* issues with data quality (e.g., a metric looks wrong, leading you to investiga",
+      "latency_ms": 5569.6,
+      "error": null
+    },
+    {
+      "var1": "business_process_strength",
+      "var2": "data_quality_and_availability",
+      "answer_parsed": "A",
+      "raw_description": "The most likely cause-and-effect relationship is that strong business processes lead to better data quality and availability.\n\nHere's the reasoning:\n\n1.  **Business Process Strength causes Data Quality and Availability:**\n    *   **Data Collection & Entry:** Strong business processes define how data is collected, entered, and validated. Clear steps, mandatory fields, validation rules, and proper training within a process directly contribute to accurate, complete, and consistent data. For example",
+      "latency_ms": 11899.1,
+      "error": null
+    },
+    {
+      "var1": "business_process_strength",
+      "var2": "csm_services_and_support",
+      "answer_parsed": "A",
+      "raw_description": "The more likely relationship is that strong business processes enable and lead to effective CSM services and support.\n\nHere's the reasoning:\n\n*   **Business process strength causes csm_services_and_support:** Robust and efficient business processes (e.g., streamlined onboarding, clear issue resolution workflows, consistent communication protocols, effective internal data management, well-defined product development cycles) provide the necessary foundation for delivering high-quality customer suc",
+      "latency_ms": 7979.4,
+      "error": null
+    },
+    {
+      "var1": "data_quality_and_availability",
+      "var2": "business_decision_quality",
+      "answer_parsed": "",
+      "raw_description": "Let's analyze the relationship between data quality and availability and business decision quality.\n\n*   **A. data_quality_and_availability causes business_decision_quality:**\n    *   If you have high-quality, accurate, complete, and readily available data, your business decisions are likely to be well-informed, strategic, and effective. You can identify trends, forecast outcomes, assess risks, and seize opportunities more accurately.\n    *   Conversely, if your data is poor quality (inaccurate,",
+      "latency_ms": 7057.0,
+      "error": null
+    },
+    {
+      "var1": "data_quality_and_availability",
+      "var2": "csm_quarterly_business_reviews_qbrs",
+      "answer_parsed": "",
+      "raw_description": "Reasoning:\nCustomer Success Managers (CSMs) conducting Quarterly Business Reviews (QBRs) rely heavily on data to assess customer health, demonstrate value, identify opportunities, and discuss performance. This data includes usage metrics, support interactions, customer feedback, financial information, and more.\n\nIf the data is of poor quality (inaccurate, incomplete, inconsistent) or unavailable, the CSM will struggle to prepare and deliver a meaningful QBR. The insights will be flawed or absent",
+      "latency_ms": 5793.9,
+      "error": null
+    },
+    {
+      "var1": "business_process_strength",
+      "var2": "business_decision_quality",
+      "answer_parsed": "A",
+      "raw_description": "The most likely cause-and-effect relationship is that business process strength causes business decision quality.\n\nHere's the reasoning:\n\n1.  **Business Process Strength as an Enabler:** Strong business processes provide the foundation for making good decisions. This includes:\n    *   **Data Quality and Availability:** Robust processes for data collection, analysis, and reporting ensure that decision-makers have accurate, relevant, and timely information.\n    *   **Information Flow:** Well-defin",
+      "latency_ms": 10442.5,
+      "error": null
+    },
+    {
+      "var1": "tier_1_metrics",
+      "var2": "business_decision_quality",
+      "answer_parsed": "B",
+      "raw_description": "The most likely cause-and-effect relationship is that the quality of business decisions impacts the tier 1 metrics.\n\n**Reasoning:**\n\n*   **Business decision quality causes tier 1 metrics:** The primary goal of making good business decisions (e.g., strategic choices, operational improvements, product development) is to achieve positive outcomes for the business. These positive outcomes are precisely what tier 1 metrics are designed to measure (e.g., increased revenue, higher profit margins, great",
+      "latency_ms": 6633.4,
+      "error": null
+    },
+    {
+      "var1": "data_quality_and_availability",
+      "var2": "csm_services_and_support",
+      "answer_parsed": "",
+      "raw_description": "Reasoning:\nLet's analyze both directions:\n\n**A. data_quality_and_availability causes csm_services_and_support**\nHigh-quality and readily available data are crucial enablers for effective Customer Success Management (CSM) services and support.\n*   **Proactive Engagement:** With good data (e.g., product usage, health scores, recent interactions, sentiment), CSMs can proactively identify at-risk customers, upsell opportunities, or customers who need specific guidance. This enables targeted and time",
+      "latency_ms": 8702.7,
+      "error": null
+    },
+    {
+      "var1": "tier_1_metrics",
+      "var2": "csm_services_and_support",
+      "answer_parsed": "",
+      "raw_description": "Reasoning:\nTier 1 metrics typically represent high-level business outcomes such as customer retention, churn rate, Net Promoter Score (NPS), customer lifetime value (CLTV), or overall product adoption and satisfaction. These are often the *results* a business aims to achieve or maintain.\n\nCSM (Customer Success Manager) services and support involve proactive engagement, onboarding, training, problem-solving, and strategic guidance provided to customers to help them achieve their desired outcomes ",
+      "latency_ms": 6646.0,
+      "error": null
+    },
+    {
+      "var1": "tier_1_metrics",
+      "var2": "csm_quarterly_business_reviews_qbrs",
+      "answer_parsed": "",
+      "raw_description": "Reasoning:\nTier 1 metrics are high-level, critical performance indicators that measure the success and health of a business or a customer relationship (e.g., customer retention, revenue, product adoption, churn rate). CSM Quarterly Business Reviews (QBRs) are strategic meetings conducted by Customer Success Managers with their clients to review progress, discuss challenges, plan for the future, and ensure the client is achieving value from the product or service.\n\nThe primary goal of QBRs is to ",
+      "latency_ms": 7468.5,
+      "error": null
+    },
+    {
+      "var1": "business_decision_quality",
+      "var2": "csm_services_and_support",
+      "answer_parsed": "A",
+      "raw_description": "Reasoning:\nThe quality of a company's overall business decisions directly impacts how it structures, funds, and prioritizes its customer-facing operations, including Customer Success Management (CSM).\n\nIf a company makes high-quality business decisions, it will likely:\n*   Allocate sufficient resources to customer retention and satisfaction.\n*   Strategically invest in tools and personnel for customer support and success.\n*   Develop clear strategies and processes for managing customer relations",
+      "latency_ms": 7028.0,
+      "error": null
+    },
+    {
+      "var1": "business_decision_quality",
+      "var2": "csm_quarterly_business_reviews_qbrs",
+      "answer_parsed": "B",
+      "raw_description": "The most likely cause-and-effect relationship is that csm_quarterly_business_reviews_qbrs cause business_decision_quality.\n\n**Reasoning:**\n\n1.  **QBRs as Information Sources:** Quarterly Business Reviews (QBRs) are strategic meetings with customers. During these reviews, Customer Success Managers (CSMs) gather crucial information about customer satisfaction, product adoption, challenges faced, future needs, market trends, and overall value realization.\n2.  **Input for Decision Making:** The insi",
+      "latency_ms": 8925.4,
+      "error": null
+    },
+    {
+      "var1": "csm_quarterly_business_reviews_qbrs",
+      "var2": "csm_services_and_support",
+      "answer_parsed": "",
+      "raw_description": "**Reasoning:**\n\nQuarterly Business Reviews (QBRs) conducted by Customer Success Managers (CSMs) are strategic meetings designed to review the customer's journey, product adoption, value realized, and future plans. These reviews are a critical component of ensuring customer success.\n\nCustomer Success Management (CSM) services and support encompass all the activities a CSM performs to help customers achieve their desired outcomes, including onboarding, training, proactive guidance, technical assis",
+      "latency_ms": 8393.0,
+      "error": null
+    }
+  ],
+  "events": [
+    {
+      "stage": "variable_discovery",
+      "event": "stage_start",
+      "wall_clock": "2026-02-23T15:48:59.387603+00:00",
+      "elapsed_since_start": 0.0,
+      "data": {}
+    },
+    {
+      "stage": "variable_discovery",
+      "event": "stage_end",
+      "wall_clock": "2026-02-23T15:49:37.733686+00:00",
+      "elapsed_since_start": 38.346,
+      "data": {
+        "elapsed_seconds": 38.346,
+        "variable_count": 20
+      }
+    },
+    {
+      "stage": "canonicalization",
+      "event": "stage_start",
+      "wall_clock": "2026-02-23T15:49:37.733720+00:00",
+      "elapsed_since_start": 38.346,
+      "data": {}
+    },
+    {
+      "stage": "canonicalization",
+      "event": "stage_end",
+      "wall_clock": "2026-02-23T15:49:56.490804+00:00",
+      "elapsed_since_start": 57.103,
+      "data": {
+        "elapsed_seconds": 18.757,
+        "raw_count": 20,
+        "canonical_count": 16,
+        "variables_merged": 4,
+        "canonical_names": [
+          "Customer Value Realization",
+          "CSM Passion",
+          "Customer Adoption",
+          "GitLab Use Cases",
+          "Customer Satisfaction",
+          "Customer Advocacy",
+          "Planned Product Features",
+          "Committed Product Features",
+          "At-Risk Product Features",
+          "Competitive Considerations",
+          "Business Process Strength",
+          "Data Quality and Availability",
+          "Tier 1 Metrics",
+          "Business Decision Quality",
+          "CSM Quarterly Business Reviews (QBRs)",
+          "CSM Services and Support"
+        ]
+      }
+    },
+    {
+      "stage": "evidence_gathering",
+      "event": "stage_start",
+      "wall_clock": "2026-02-23T15:49:56.490838+00:00",
+      "elapsed_since_start": 57.103,
+      "data": {}
+    },
+    {
+      "stage": "evidence_gathering",
+      "event": "stage_end",
+      "wall_clock": "2026-02-23T15:50:07.383839+00:00",
+      "elapsed_since_start": 67.996,
+      "data": {
+        "elapsed_seconds": 10.893,
+        "variables_queried": 16,
+        "total_bundles_cached": 40,
+        "bundles_per_variable": {
+          "Customer Value Realization": 3,
+          "CSM Passion": 3,
+          "Customer Adoption": 3,
+          "GitLab Use Cases": 3,
+          "Customer Satisfaction": 3,
+          "Customer Advocacy": 3,
+          "Planned Product Features": 3,
+          "Committed Product Features": 3,
+          "At-Risk Product Features": 3,
+          "Competitive Considerations": 3,
+          "Business Process Strength": 3,
+          "Data Quality and Availability": 3,
+          "Tier 1 Metrics": 3,
+          "Business Decision Quality": 3,
+          "CSM Quarterly Business Reviews (QBRs)": 3,
+          "CSM Services and Support": 3
+        }
+      }
+    },
+    {
+      "stage": "dag_drafting",
+      "event": "stage_start",
+      "wall_clock": "2026-02-23T15:50:07.383879+00:00",
+      "elapsed_since_start": 67.996,
+      "data": {}
+    },
+    {
+      "stage": "dag_drafting",
+      "event": "stage_end",
+      "wall_clock": "2026-02-23T15:52:27.503102+00:00",
+      "elapsed_since_start": 208.116,
+      "data": {
+        "elapsed_seconds": 140.119,
+        "total_edges_drafted": 50,
+        "edge_list": [
+          "gitlab_use_cases->customer_value_realization (moderate)",
+          "at_risk_product_features->customer_value_realization (hypothesis)",
+          "customer_value_realization->customer_advocacy (moderate)",
+          "data_quality_and_availability->customer_value_realization (hypothesis)",
+          "csm_quarterly_business_reviews_qbrs->customer_value_realization (hypothesis)",
+          "customer_value_realization->tier_1_metrics (strong)",
+          "business_decision_quality->customer_value_realization (hypothesis)",
+          "csm_passion->customer_satisfaction (hypothesis)",
+          "csm_passion->customer_advocacy (hypothesis)",
+          "csm_passion->customer_adoption (moderate)",
+          "csm_passion->planned_product_features (hypothesis)",
+          "csm_quarterly_business_reviews_qbrs->csm_passion (hypothesis)",
+          "csm_services_and_support->csm_passion (hypothesis)",
+          "planned_product_features->customer_adoption (moderate)",
+          "committed_product_features->customer_adoption (moderate)",
+          "at_risk_product_features->customer_adoption (moderate)",
+          "data_quality_and_availability->customer_adoption (moderate)",
+          "customer_adoption->competitive_considerations (strong)",
+          "customer_adoption->tier_1_metrics (strong)",
+          "csm_services_and_support->customer_adoption (moderate)",
+          "gitlab_use_cases->planned_product_features (hypothesis)",
+          "gitlab_use_cases->customer_satisfaction (hypothesis)",
+          "gitlab_use_cases->customer_advocacy (hypothesis)",
+          "business_decision_quality->customer_adoption (moderate)",
+          "csm_quarterly_business_reviews_qbrs->customer_adoption (moderate)",
+          "competitive_considerations->gitlab_use_cases (moderate)",
+          "at_risk_product_features->gitlab_use_cases (hypothesis)",
+          "gitlab_use_cases->csm_quarterly_business_reviews_qbrs (hypothesis)",
+          "gitlab_use_cases->business_process_strength (hypothesis)",
+          "gitlab_use_cases->tier_1_metrics (strong)",
+          "customer_satisfaction->customer_advocacy (hypothesis)",
+          "at_risk_product_features->customer_satisfaction (hypothesis)",
+          "business_process_strength->customer_satisfaction (hypothesis)",
+          "data_quality_and_availability->customer_satisfaction (hypothesis)",
+          "business_decision_quality->customer_satisfaction (hypothesis)",
+          "csm_services_and_support->customer_satisfaction (hypothesis)",
+          "tier_1_metrics->customer_satisfaction (strong)",
+          "committed_product_features->customer_advocacy (hypothesis)",
+          "data_quality_and_availability->customer_advocacy (hypothesis)",
+          "csm_quarterly_business_reviews_qbrs->customer_advocacy (hypothesis)",
+          "customer_advocacy->tier_1_metrics (strong)",
+          "business_decision_quality->customer_advocacy (hypothesis)",
+          "csm_services_and_support->customer_advocacy (hypothesis)",
+          "planned_product_features->at_risk_product_features (hypothesis)",
+          "csm_quarterly_business_reviews_qbrs->planned_product_features (hypothesis)",
+          "data_quality_and_availability->planned_product_features (hypothesis)",
+          "business_decision_quality->planned_product_features (hypothesis)",
+          "business_process_strength->planned_product_features (hypothesis)",
+          "planned_product_features->tier_1_metrics (moderate)",
+          "business_process_strength->committed_product_features (hypothesis)"
+        ]
+      }
+    },
+    {
+      "stage": "mechanism_synthesis",
+      "event": "stage_start",
+      "wall_clock": "2026-02-23T15:52:27.503143+00:00",
+      "elapsed_since_start": 208.116,
+      "data": {}
+    },
+    {
+      "stage": "mechanism_synthesis",
+      "event": "stage_end",
+      "wall_clock": "2026-02-23T15:53:15.411115+00:00",
+      "elapsed_since_start": 256.024,
+      "data": {
+        "elapsed_seconds": 47.908,
+        "edges_synthesized": 50
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "stage_start",
+      "wall_clock": "2026-02-23T15:53:15.411151+00:00",
+      "elapsed_since_start": 256.024,
+      "data": {}
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:54:21.678133+00:00",
+      "elapsed_since_start": 322.291,
+      "data": {
+        "edge": "gitlab_use_cases->customer_value_realization",
+        "iteration": 1,
+        "is_grounded": true,
+        "confidence": 0.95,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 3218
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:54:21.678571+00:00",
+      "elapsed_since_start": 322.291,
+      "data": {
+        "edge": "customer_value_realization->customer_advocacy",
+        "iteration": 1,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "correlation_only",
+        "has_refinement": true,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 2792
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:54:22.333272+00:00",
+      "elapsed_since_start": 322.946,
+      "data": {
+        "edge": "at_risk_product_features->customer_value_realization",
+        "iteration": 1,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "irrelevant",
+        "has_refinement": true,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 4903
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:54:22.988862+00:00",
+      "elapsed_since_start": 323.601,
+      "data": {
+        "edge": "csm_quarterly_business_reviews_qbrs->customer_value_realization",
+        "iteration": 1,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "irrelevant",
+        "has_refinement": true,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 8527
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:54:23.625677+00:00",
+      "elapsed_since_start": 324.238,
+      "data": {
+        "edge": "business_decision_quality->customer_value_realization",
+        "iteration": 1,
+        "is_grounded": true,
+        "confidence": 0.95,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 3366
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:54:23.625783+00:00",
+      "elapsed_since_start": 324.238,
+      "data": {
+        "edge": "data_quality_and_availability->customer_value_realization",
+        "iteration": 1,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "irrelevant",
+        "has_refinement": true,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 3575
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:54:24.268115+00:00",
+      "elapsed_since_start": 324.881,
+      "data": {
+        "edge": "csm_passion->customer_satisfaction",
+        "iteration": 1,
+        "is_grounded": true,
+        "confidence": 1.0,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 6133
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:54:24.268238+00:00",
+      "elapsed_since_start": 324.881,
+      "data": {
+        "edge": "customer_value_realization->tier_1_metrics",
+        "iteration": 1,
+        "is_grounded": true,
+        "confidence": 1.0,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 6180
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:54:33.553252+00:00",
+      "elapsed_since_start": 334.166,
+      "data": {
+        "edge": "csm_quarterly_business_reviews_qbrs->csm_passion",
+        "iteration": 1,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "irrelevant",
+        "has_refinement": true,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 2430
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:54:34.649934+00:00",
+      "elapsed_since_start": 335.262,
+      "data": {
+        "edge": "csm_passion->customer_adoption",
+        "iteration": 1,
+        "is_grounded": true,
+        "confidence": 1.0,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 6161
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:54:34.867965+00:00",
+      "elapsed_since_start": 335.48,
+      "data": {
+        "edge": "csm_passion->planned_product_features",
+        "iteration": 1,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "irrelevant",
+        "has_refinement": true,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 2235
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:54:36.625298+00:00",
+      "elapsed_since_start": 337.238,
+      "data": {
+        "edge": "csm_services_and_support->csm_passion",
+        "iteration": 1,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "irrelevant",
+        "has_refinement": true,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 2659
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:54:37.266688+00:00",
+      "elapsed_since_start": 337.879,
+      "data": {
+        "edge": "planned_product_features->customer_adoption",
+        "iteration": 1,
+        "is_grounded": true,
+        "confidence": 1.0,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 7371
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:54:38.281704+00:00",
+      "elapsed_since_start": 338.894,
+      "data": {
+        "edge": "committed_product_features->customer_adoption",
+        "iteration": 1,
+        "is_grounded": true,
+        "confidence": 1.0,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 7229
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:54:38.943011+00:00",
+      "elapsed_since_start": 339.555,
+      "data": {
+        "edge": "csm_passion->customer_advocacy",
+        "iteration": 1,
+        "is_grounded": true,
+        "confidence": 0.9,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 6161
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:54:39.921908+00:00",
+      "elapsed_since_start": 340.534,
+      "data": {
+        "edge": "at_risk_product_features->customer_adoption",
+        "iteration": 1,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "irrelevant",
+        "has_refinement": true,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 7239
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:54:44.645763+00:00",
+      "elapsed_since_start": 345.258,
+      "data": {
+        "edge": "data_quality_and_availability->customer_adoption",
+        "iteration": 1,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "irrelevant",
+        "has_refinement": true,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 3079
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:54:45.413431+00:00",
+      "elapsed_since_start": 346.026,
+      "data": {
+        "edge": "customer_adoption->competitive_considerations",
+        "iteration": 1,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "irrelevant",
+        "has_refinement": true,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 2819
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:54:48.360209+00:00",
+      "elapsed_since_start": 348.973,
+      "data": {
+        "edge": "gitlab_use_cases->planned_product_features",
+        "iteration": 1,
+        "is_grounded": true,
+        "confidence": 1.0,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 5410
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:54:48.578900+00:00",
+      "elapsed_since_start": 349.191,
+      "data": {
+        "edge": "customer_adoption->tier_1_metrics",
+        "iteration": 1,
+        "is_grounded": true,
+        "confidence": 1.0,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 5916
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:54:50.993855+00:00",
+      "elapsed_since_start": 351.606,
+      "data": {
+        "edge": "csm_services_and_support->customer_adoption",
+        "iteration": 1,
+        "is_grounded": true,
+        "confidence": 1.0,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 5918
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:54:51.543148+00:00",
+      "elapsed_since_start": 352.156,
+      "data": {
+        "edge": "gitlab_use_cases->customer_satisfaction",
+        "iteration": 1,
+        "is_grounded": true,
+        "confidence": 1.0,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 3391
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:54:52.860752+00:00",
+      "elapsed_since_start": 353.473,
+      "data": {
+        "edge": "business_decision_quality->customer_adoption",
+        "iteration": 1,
+        "is_grounded": true,
+        "confidence": 1.0,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 4091
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:54:58.353603+00:00",
+      "elapsed_since_start": 358.966,
+      "data": {
+        "edge": "gitlab_use_cases->customer_advocacy",
+        "iteration": 1,
+        "is_grounded": true,
+        "confidence": 0.9,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 3364
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:54:58.687205+00:00",
+      "elapsed_since_start": 359.3,
+      "data": {
+        "edge": "competitive_considerations->gitlab_use_cases",
+        "iteration": 1,
+        "is_grounded": true,
+        "confidence": 1.0,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 6118
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:55:00.110629+00:00",
+      "elapsed_since_start": 360.723,
+      "data": {
+        "edge": "csm_quarterly_business_reviews_qbrs->customer_adoption",
+        "iteration": 1,
+        "is_grounded": false,
+        "confidence": 0.9,
+        "support_type": "correlation_only",
+        "has_refinement": true,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 13874
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:55:00.762728+00:00",
+      "elapsed_since_start": 361.375,
+      "data": {
+        "edge": "at_risk_product_features->gitlab_use_cases",
+        "iteration": 1,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "correlation_only",
+        "has_refinement": true,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 5474
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:55:01.372607+00:00",
+      "elapsed_since_start": 361.985,
+      "data": {
+        "edge": "gitlab_use_cases->csm_quarterly_business_reviews_qbrs",
+        "iteration": 1,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "irrelevant",
+        "has_refinement": true,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 9060
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:55:02.194710+00:00",
+      "elapsed_since_start": 362.807,
+      "data": {
+        "edge": "customer_satisfaction->customer_advocacy",
+        "iteration": 1,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "correlation_only",
+        "has_refinement": true,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 2328
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:55:06.032939+00:00",
+      "elapsed_since_start": 366.645,
+      "data": {
+        "edge": "business_process_strength->customer_satisfaction",
+        "iteration": 1,
+        "is_grounded": true,
+        "confidence": 1.0,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 3644
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:55:07.352598+00:00",
+      "elapsed_since_start": 367.965,
+      "data": {
+        "edge": "gitlab_use_cases->business_process_strength",
+        "iteration": 1,
+        "is_grounded": false,
+        "confidence": 0.9,
+        "support_type": "correlation_only",
+        "has_refinement": true,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 4049
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:55:08.235593+00:00",
+      "elapsed_since_start": 368.848,
+      "data": {
+        "edge": "gitlab_use_cases->tier_1_metrics",
+        "iteration": 1,
+        "is_grounded": false,
+        "confidence": 0.9,
+        "support_type": "correlation_only",
+        "has_refinement": true,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 3628
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:55:08.986714+00:00",
+      "elapsed_since_start": 369.599,
+      "data": {
+        "edge": "at_risk_product_features->customer_satisfaction",
+        "iteration": 1,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "irrelevant",
+        "has_refinement": true,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 3449
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:55:09.645203+00:00",
+      "elapsed_since_start": 370.258,
+      "data": {
+        "edge": "csm_services_and_support->customer_satisfaction",
+        "iteration": 1,
+        "is_grounded": true,
+        "confidence": 1.0,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 9304
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:55:11.953547+00:00",
+      "elapsed_since_start": 372.566,
+      "data": {
+        "edge": "business_decision_quality->customer_satisfaction",
+        "iteration": 1,
+        "is_grounded": true,
+        "confidence": 1.0,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 3176
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:55:13.710326+00:00",
+      "elapsed_since_start": 374.323,
+      "data": {
+        "edge": "data_quality_and_availability->customer_satisfaction",
+        "iteration": 1,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "correlation_only",
+        "has_refinement": true,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 3289
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:55:16.565885+00:00",
+      "elapsed_since_start": 377.178,
+      "data": {
+        "edge": "tier_1_metrics->customer_satisfaction",
+        "iteration": 1,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "correlation_only",
+        "has_refinement": true,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 4175
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:55:17.545849+00:00",
+      "elapsed_since_start": 378.158,
+      "data": {
+        "edge": "committed_product_features->customer_advocacy",
+        "iteration": 1,
+        "is_grounded": true,
+        "confidence": 0.9,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 6474
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:55:18.208152+00:00",
+      "elapsed_since_start": 378.821,
+      "data": {
+        "edge": "data_quality_and_availability->customer_advocacy",
+        "iteration": 1,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "irrelevant",
+        "has_refinement": true,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 2655
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:55:19.209748+00:00",
+      "elapsed_since_start": 379.822,
+      "data": {
+        "edge": "csm_services_and_support->customer_advocacy",
+        "iteration": 1,
+        "is_grounded": true,
+        "confidence": 1.0,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 6425
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:55:20.198674+00:00",
+      "elapsed_since_start": 380.811,
+      "data": {
+        "edge": "business_decision_quality->customer_advocacy",
+        "iteration": 1,
+        "is_grounded": true,
+        "confidence": 1.0,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 2442
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:55:21.073928+00:00",
+      "elapsed_since_start": 381.686,
+      "data": {
+        "edge": "csm_quarterly_business_reviews_qbrs->customer_advocacy",
+        "iteration": 1,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "correlation_only",
+        "has_refinement": true,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 8697
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:55:23.622964+00:00",
+      "elapsed_since_start": 384.235,
+      "data": {
+        "edge": "customer_advocacy->tier_1_metrics",
+        "iteration": 1,
+        "is_grounded": true,
+        "confidence": 0.9,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 6922
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:55:25.715549+00:00",
+      "elapsed_since_start": 386.328,
+      "data": {
+        "edge": "planned_product_features->at_risk_product_features",
+        "iteration": 1,
+        "is_grounded": true,
+        "confidence": 0.9,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 2604
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:55:27.031303+00:00",
+      "elapsed_since_start": 387.644,
+      "data": {
+        "edge": "business_decision_quality->planned_product_features",
+        "iteration": 1,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "irrelevant",
+        "has_refinement": true,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 1931
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:55:27.650845+00:00",
+      "elapsed_since_start": 388.263,
+      "data": {
+        "edge": "data_quality_and_availability->planned_product_features",
+        "iteration": 1,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "irrelevant",
+        "has_refinement": true,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 2745
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:55:28.270199+00:00",
+      "elapsed_since_start": 388.883,
+      "data": {
+        "edge": "csm_quarterly_business_reviews_qbrs->planned_product_features",
+        "iteration": 1,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "irrelevant",
+        "has_refinement": true,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 2838
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:55:30.625784+00:00",
+      "elapsed_since_start": 391.238,
+      "data": {
+        "edge": "business_process_strength->planned_product_features",
+        "iteration": 1,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "irrelevant",
+        "has_refinement": true,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 1931
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:55:33.711234+00:00",
+      "elapsed_since_start": 394.324,
+      "data": {
+        "edge": "business_process_strength->committed_product_features",
+        "iteration": 1,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "irrelevant",
+        "has_refinement": true,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 2034
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:55:36.439106+00:00",
+      "elapsed_since_start": 397.052,
+      "data": {
+        "edge": "customer_value_realization->customer_advocacy",
+        "iteration": 2,
+        "is_grounded": false,
+        "confidence": 0.9,
+        "support_type": "correlation_only",
+        "has_refinement": true,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 2273
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:55:38.951269+00:00",
+      "elapsed_since_start": 399.564,
+      "data": {
+        "edge": "at_risk_product_features->customer_value_realization",
+        "iteration": 2,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "irrelevant",
+        "has_refinement": true,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 6325
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:55:39.561990+00:00",
+      "elapsed_since_start": 400.174,
+      "data": {
+        "edge": "planned_product_features->tier_1_metrics",
+        "iteration": 1,
+        "is_grounded": true,
+        "confidence": 0.9,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 4497
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:55:40.603086+00:00",
+      "elapsed_since_start": 401.215,
+      "data": {
+        "edge": "csm_quarterly_business_reviews_qbrs->customer_value_realization",
+        "iteration": 2,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "correlation_only",
+        "has_refinement": true,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 17346
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:55:41.472809+00:00",
+      "elapsed_since_start": 402.085,
+      "data": {
+        "edge": "data_quality_and_availability->customer_value_realization",
+        "iteration": 2,
+        "is_grounded": true,
+        "confidence": 0.9,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 2274
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:55:44.202910+00:00",
+      "elapsed_since_start": 404.815,
+      "data": {
+        "edge": "csm_quarterly_business_reviews_qbrs->csm_passion",
+        "iteration": 2,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "irrelevant",
+        "has_refinement": true,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 12098
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:55:47.280434+00:00",
+      "elapsed_since_start": 407.893,
+      "data": {
+        "edge": "csm_passion->planned_product_features",
+        "iteration": 2,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "irrelevant",
+        "has_refinement": true,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 4504
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:55:49.802742+00:00",
+      "elapsed_since_start": 410.415,
+      "data": {
+        "edge": "csm_services_and_support->csm_passion",
+        "iteration": 2,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "irrelevant",
+        "has_refinement": true,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 5317
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:55:58.006927+00:00",
+      "elapsed_since_start": 418.619,
+      "data": {
+        "edge": "at_risk_product_features->customer_adoption",
+        "iteration": 2,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "irrelevant",
+        "has_refinement": true,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 11328
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:56:00.318021+00:00",
+      "elapsed_since_start": 420.93,
+      "data": {
+        "edge": "data_quality_and_availability->customer_adoption",
+        "iteration": 2,
+        "is_grounded": false,
+        "confidence": 0.9,
+        "support_type": "irrelevant",
+        "has_refinement": true,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 8696
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:56:01.190405+00:00",
+      "elapsed_since_start": 421.803,
+      "data": {
+        "edge": "customer_adoption->competitive_considerations",
+        "iteration": 2,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "irrelevant",
+        "has_refinement": true,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 2499
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:56:17.083438+00:00",
+      "elapsed_since_start": 437.696,
+      "data": {
+        "edge": "gitlab_use_cases->csm_quarterly_business_reviews_qbrs",
+        "iteration": 2,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "correlation_only",
+        "has_refinement": true,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 16310
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:56:17.952195+00:00",
+      "elapsed_since_start": 438.565,
+      "data": {
+        "edge": "at_risk_product_features->gitlab_use_cases",
+        "iteration": 2,
+        "is_grounded": false,
+        "confidence": 0.9,
+        "support_type": "correlation_only",
+        "has_refinement": true,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 6439
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:56:18.066953+00:00",
+      "elapsed_since_start": 438.679,
+      "data": {
+        "edge": "customer_satisfaction->customer_advocacy",
+        "iteration": 2,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "correlation_only",
+        "has_refinement": true,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 2287
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:56:23.871772+00:00",
+      "elapsed_since_start": 444.484,
+      "data": {
+        "edge": "csm_quarterly_business_reviews_qbrs->customer_adoption",
+        "iteration": 2,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "irrelevant",
+        "has_refinement": true,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 17266
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:56:26.839594+00:00",
+      "elapsed_since_start": 447.452,
+      "data": {
+        "edge": "at_risk_product_features->customer_satisfaction",
+        "iteration": 2,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "irrelevant",
+        "has_refinement": true,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 6236
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:56:28.892532+00:00",
+      "elapsed_since_start": 449.505,
+      "data": {
+        "edge": "gitlab_use_cases->business_process_strength",
+        "iteration": 2,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "irrelevant",
+        "has_refinement": true,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 22361
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:56:29.548095+00:00",
+      "elapsed_since_start": 450.161,
+      "data": {
+        "edge": "data_quality_and_availability->customer_satisfaction",
+        "iteration": 2,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "irrelevant",
+        "has_refinement": true,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 2783
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:56:30.176132+00:00",
+      "elapsed_since_start": 450.789,
+      "data": {
+        "edge": "gitlab_use_cases->tier_1_metrics",
+        "iteration": 2,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "correlation_only",
+        "has_refinement": true,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 11593
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:56:30.796138+00:00",
+      "elapsed_since_start": 451.409,
+      "data": {
+        "edge": "data_quality_and_availability->customer_advocacy",
+        "iteration": 2,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "irrelevant",
+        "has_refinement": true,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 3771
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:56:33.478470+00:00",
+      "elapsed_since_start": 454.091,
+      "data": {
+        "edge": "csm_quarterly_business_reviews_qbrs->customer_advocacy",
+        "iteration": 2,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "correlation_only",
+        "has_refinement": true,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 5390
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:56:34.355759+00:00",
+      "elapsed_since_start": 454.968,
+      "data": {
+        "edge": "tier_1_metrics->customer_satisfaction",
+        "iteration": 2,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "correlation_only",
+        "has_refinement": true,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 2096
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:56:38.939925+00:00",
+      "elapsed_since_start": 459.552,
+      "data": {
+        "edge": "data_quality_and_availability->planned_product_features",
+        "iteration": 2,
+        "is_grounded": true,
+        "confidence": 1.0,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 2849
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:56:39.706295+00:00",
+      "elapsed_since_start": 460.319,
+      "data": {
+        "edge": "business_decision_quality->planned_product_features",
+        "iteration": 2,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "irrelevant",
+        "has_refinement": true,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 2043
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:56:40.688420+00:00",
+      "elapsed_since_start": 461.301,
+      "data": {
+        "edge": "csm_quarterly_business_reviews_qbrs->planned_product_features",
+        "iteration": 2,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "irrelevant",
+        "has_refinement": true,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 1986
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:56:41.314814+00:00",
+      "elapsed_since_start": 461.927,
+      "data": {
+        "edge": "business_process_strength->planned_product_features",
+        "iteration": 2,
+        "is_grounded": true,
+        "confidence": 0.9,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 2216
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:56:41.889808+00:00",
+      "elapsed_since_start": 462.502,
+      "data": {
+        "edge": "business_process_strength->committed_product_features",
+        "iteration": 2,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "irrelevant",
+        "has_refinement": true,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 3196
+      }
+    },
+    {
+      "stage": "llm",
+      "event": "retry",
+      "wall_clock": "2026-02-23T15:56:42.516034+00:00",
+      "elapsed_since_start": 463.128,
+      "data": {
+        "model": "gemini-2.5-pro",
+        "attempt": 1,
+        "error": "1 validation error for AdversarialVerdict\nconfidence\n  Input should be less than or equal to 1 [type=less_than_equal, input_value=8.5, input_type=float]\n    For further information visit https://error"
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:56:43.425468+00:00",
+      "elapsed_since_start": 464.038,
+      "data": {
+        "edge": "customer_value_realization->customer_advocacy",
+        "iteration": 3,
+        "is_grounded": false,
+        "confidence": 0.9,
+        "support_type": "correlation_only",
+        "has_refinement": true,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 4368
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:56:43.645022+00:00",
+      "elapsed_since_start": 464.257,
+      "data": {
+        "edge": "at_risk_product_features->customer_value_realization",
+        "iteration": 3,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "irrelevant",
+        "has_refinement": true,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 6056
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:56:50.628077+00:00",
+      "elapsed_since_start": 471.24,
+      "data": {
+        "edge": "csm_passion->planned_product_features",
+        "iteration": 3,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "irrelevant",
+        "has_refinement": true,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 3927
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:56:51.729042+00:00",
+      "elapsed_since_start": 472.341,
+      "data": {
+        "edge": "csm_services_and_support->csm_passion",
+        "iteration": 3,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "irrelevant",
+        "has_refinement": false,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 5495
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:56:54.367339+00:00",
+      "elapsed_since_start": 474.98,
+      "data": {
+        "edge": "csm_quarterly_business_reviews_qbrs->customer_value_realization",
+        "iteration": 3,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "irrelevant",
+        "has_refinement": true,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 9019
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:56:54.369186+00:00",
+      "elapsed_since_start": 474.982,
+      "data": {
+        "edge": "customer_satisfaction->customer_advocacy",
+        "iteration": 3,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "correlation_only",
+        "has_refinement": true,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 2800
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:56:54.917140+00:00",
+      "elapsed_since_start": 475.53,
+      "data": {
+        "edge": "data_quality_and_availability->customer_adoption",
+        "iteration": 3,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "irrelevant",
+        "has_refinement": true,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 4811
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:56:56.006511+00:00",
+      "elapsed_since_start": 476.619,
+      "data": {
+        "edge": "customer_adoption->competitive_considerations",
+        "iteration": 3,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "correlation_only",
+        "has_refinement": true,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 2818
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:57:00.719744+00:00",
+      "elapsed_since_start": 481.332,
+      "data": {
+        "edge": "gitlab_use_cases->csm_quarterly_business_reviews_qbrs",
+        "iteration": 3,
+        "is_grounded": true,
+        "confidence": 0.9,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 11852
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:57:02.365659+00:00",
+      "elapsed_since_start": 482.978,
+      "data": {
+        "edge": "at_risk_product_features->customer_satisfaction",
+        "iteration": 3,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "irrelevant",
+        "has_refinement": true,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 6467
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:57:04.182774+00:00",
+      "elapsed_since_start": 484.795,
+      "data": {
+        "edge": "csm_quarterly_business_reviews_qbrs->customer_adoption",
+        "iteration": 3,
+        "is_grounded": false,
+        "confidence": 0.9,
+        "support_type": "correlation_only",
+        "has_refinement": true,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 17211
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:57:05.434855+00:00",
+      "elapsed_since_start": 486.047,
+      "data": {
+        "edge": "data_quality_and_availability->customer_advocacy",
+        "iteration": 3,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "irrelevant",
+        "has_refinement": true,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 2769
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:57:06.420505+00:00",
+      "elapsed_since_start": 487.033,
+      "data": {
+        "edge": "gitlab_use_cases->business_process_strength",
+        "iteration": 3,
+        "is_grounded": true,
+        "confidence": 0.9,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 10258
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:57:07.425169+00:00",
+      "elapsed_since_start": 488.038,
+      "data": {
+        "edge": "data_quality_and_availability->customer_satisfaction",
+        "iteration": 3,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "irrelevant",
+        "has_refinement": true,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 2752
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:57:09.058164+00:00",
+      "elapsed_since_start": 489.671,
+      "data": {
+        "edge": "business_decision_quality->planned_product_features",
+        "iteration": 3,
+        "is_grounded": true,
+        "confidence": 1.0,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 3353
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:57:09.938258+00:00",
+      "elapsed_since_start": 490.551,
+      "data": {
+        "edge": "gitlab_use_cases->tier_1_metrics",
+        "iteration": 3,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "correlation_only",
+        "has_refinement": true,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 13929
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:57:11.675112+00:00",
+      "elapsed_since_start": 492.288,
+      "data": {
+        "edge": "csm_quarterly_business_reviews_qbrs->planned_product_features",
+        "iteration": 3,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "irrelevant",
+        "has_refinement": true,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 2232
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T15:57:17.586653+00:00",
+      "elapsed_since_start": 498.199,
+      "data": {
+        "edge": "business_process_strength->committed_product_features",
+        "iteration": 3,
+        "is_grounded": false,
+        "confidence": 0.9,
+        "support_type": "irrelevant",
+        "has_refinement": true,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 3291
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "stage_end",
+      "wall_clock": "2026-02-23T15:57:23.358921+00:00",
+      "elapsed_since_start": 503.971,
+      "data": {
+        "elapsed_seconds": 247.948,
+        "total_edges": 50,
+        "grounded": 30,
+        "rejected": 20
+      }
+    },
+    {
+      "stage": "graph_assembly",
+      "event": "stage_start",
+      "wall_clock": "2026-02-23T15:57:23.359568+00:00",
+      "elapsed_since_start": 503.972,
+      "data": {}
+    },
+    {
+      "stage": "graph_assembly",
+      "event": "stage_end",
+      "wall_clock": "2026-02-23T15:57:23.377508+00:00",
+      "elapsed_since_start": 503.99,
+      "data": {
+        "elapsed_seconds": 0.018,
+        "variables_added": 16,
+        "edges_added": 30,
+        "edges_rejected_at_add": 0
+      }
+    },
+    {
+      "stage": "pipeline",
+      "event": "run_complete",
+      "wall_clock": "2026-02-23T15:57:24.602161+00:00",
+      "elapsed_since_start": 505.215,
+      "data": {
+        "variables": 16,
+        "edges": 30,
+        "evidence": 48
+      }
+    }
+  ]
+}

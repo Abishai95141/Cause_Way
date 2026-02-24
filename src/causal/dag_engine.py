@@ -23,6 +23,9 @@ from src.models.causal import (
 )
 from src.models.enums import EvidenceStrength, MeasurementStatus, ModelStatus, VariableRole, VariableType
 
+import logging
+_dag_logger = logging.getLogger(__name__)
+
 
 class CycleDetectedError(Exception):
     """Raised when adding an edge would create a cycle."""
@@ -173,8 +176,16 @@ class DAGEngine:
         """
         # Validate nodes exist
         if from_var not in self._variables:
+            _dag_logger.error(
+                "[TELEMETRY] NodeNotFoundError: from_var=%r not in variables=%s",
+                from_var, sorted(self._variables.keys()),
+            )
             raise NodeNotFoundError(from_var)
         if to_var not in self._variables:
+            _dag_logger.error(
+                "[TELEMETRY] NodeNotFoundError: to_var=%r not in variables=%s",
+                to_var, sorted(self._variables.keys()),
+            )
             raise NodeNotFoundError(to_var)
         
         # Check for existing edge
@@ -188,7 +199,12 @@ class DAGEngine:
             self._graph.add_edge(from_var, to_var)
             cycles = list(nx.simple_cycles(self._graph))
             self._graph.remove_edge(from_var, to_var)
-            raise CycleDetectedError(cycles[0] if cycles else [from_var, to_var, from_var])
+            cycle_path = cycles[0] if cycles else [from_var, to_var, from_var]
+            _dag_logger.warning(
+                "[TELEMETRY] CycleDetectedError: %s → %s would create cycle: %s",
+                from_var, to_var, cycle_path,
+            )
+            raise CycleDetectedError(cycle_path)
         
         # Create edge
         edge = CausalEdge(

@@ -34,7 +34,84 @@ from src.models.enums import (
 from src.models.evidence import EvidenceBundle
 from src.utils.text import truncate_at_sentence_boundary
 
+try:
+    from src.utils.telemetry import get_telemetry as _get_telemetry
+except ImportError:
+    _get_telemetry = None  # graceful fallback if telemetry not available
+
 _logger = logging.getLogger(__name__)
+
+
+# ---------------------------------------------------------------------------
+# Robust answer normalizer for PyWhyLLM pairwise responses
+# ---------------------------------------------------------------------------
+# LLMs frequently return answers like <answer>A.</answer>, <answer>Option A</answer>,
+# or omit the <answer> tags entirely.  The old equality check (== "A") silently
+# dropped 5-15% of valid edges.  This normalizer handles all observed variants.
+
+def _normalize_answer(raw_description: str) -> str:
+    """Extract and normalize the pairwise answer from an LLM response.
+
+    Returns exactly ``"A"``, ``"B"``, ``"C"``, or ``""`` (unparseable).
+
+    Resolution order:
+    1. ``<answer>…</answer>`` tags — take the first alphabetic character.
+    2. LaTeX ``\\boxed{…}`` or ``$\\boxed{…}$`` — extract the letter inside.
+    3. Fallback: scan the last 150 chars for a standalone A/B/C letter.
+    4. Give up → return ``""``.
+    """
+    if not raw_description:
+        return ""
+
+    # --- Primary path: <answer> tag extraction ---
+    tag_matches = re.findall(r'<answer>(.*?)</answer>', raw_description, re.DOTALL)
+    if tag_matches:
+        # Take the first tag's content, strip whitespace
+        content = tag_matches[0].strip()
+        # Extract the first A/B/C character from the content
+        letter_match = re.search(r'[ABCabc]', content)
+        if letter_match:
+            return letter_match.group(0).upper()
+        # Tag existed but contained no A/B/C — fall through to fallback
+
+    # --- LaTeX \boxed{} extraction ---
+    # Handles: \boxed{A}, $\boxed{A}$, $$\boxed{A}$$, \boxed{ A }, etc.
+    boxed_match = re.search(
+        r'\\boxed\{\s*([ABCabc])\s*\}',
+        raw_description,
+    )
+    if boxed_match:
+        return boxed_match.group(1).upper()
+
+    # --- Markdown bold/emphasis: **A**, *A*, __A__ ---
+    bold_match = re.search(
+        r'(?:\*\*|__)\s*([ABCabc])\s*(?:\*\*|__)',
+        raw_description[-300:],
+    )
+    if bold_match:
+        return bold_match.group(1).upper()
+
+    # --- "Answer: A" / "answer is A" / "my answer is A" patterns ---
+    explicit_match = re.search(
+        r'(?:answer|choice|option)\s*(?:is|:)\s*([ABCabc])',
+        raw_description[-300:],
+        re.IGNORECASE,
+    )
+    if explicit_match:
+        return explicit_match.group(1).upper()
+
+    # --- Fallback: scan tail of response for standalone A/B/C ---
+    # Only look at the last 150 chars to avoid matching A/B/C in reasoning text
+    tail = raw_description[-150:]
+    # Match "A.", "A)", "A:", "A\n", or standalone "A" at word boundary
+    fallback_match = re.search(
+        r'(?:^|\W)([ABC])(?:\.|\)|:|\s|$)',
+        tail,
+    )
+    if fallback_match:
+        return fallback_match.group(1).upper()
+
+    return ""
 
 
 # ---------------------------------------------------------------------------
@@ -285,54 +362,159 @@ class CausalGraphBridge:
 
         MAX_WORKERS = 10  # stay under Gemini per-minute rate limits
 
+        # ------------------------------------------------------------------
+        # Evidence co-occurrence pre-filter
+        #
+        # With 50 variables, C(50,2) = 1,225 blind pairwise API calls is
+        # prohibitively slow (10+ min even with concurrency).  Instead,
+        # only check pairs that share at least one evidence bundle or
+        # where one variable appears in the other's evidence text.  This
+        # reduces calls from O(n²) to O(evidence-density), typically
+        # 100-300 pairs for real-world corpora.
+        # ------------------------------------------------------------------
+        def _prefilter_pairs(
+            all_vars: list[str],
+            ev_bundles: dict[str, list[EvidenceBundle]],
+        ) -> list[tuple[str, str]]:
+            """Return only variable pairs with evidence co-occurrence."""
+            # Build reverse index: for each evidence chunk, which variables
+            # are mentioned?
+            from collections import defaultdict
+            var_to_evidence_ids: dict[str, set[str]] = defaultdict(set)
+            evidence_text_cache: dict[str, str] = {}
+
+            for var_id, bundles in ev_bundles.items():
+                for eb in bundles:
+                    eid = eb.content_hash[:16]
+                    var_to_evidence_ids[var_id].add(eid)
+                    evidence_text_cache[eid] = eb.content.lower()
+
+            # Also scan all evidence for mentions of variables not in their
+            # bundle list (broader co-occurrence)
+            for var_id in all_vars:
+                var_lower = var_id.replace("_", " ")
+                for eid, text in evidence_text_cache.items():
+                    if var_lower in text or var_id in text:
+                        var_to_evidence_ids[var_id].add(eid)
+
+            # A pair is relevant if they share at least one evidence chunk
+            # OR if one variable is mentioned in any evidence chunk of the
+            # other variable.
+            candidate_pairs: set[tuple[str, str]] = set()
+            all_pairs = list(itertools.combinations(all_vars, 2))
+
+            for v1, v2 in all_pairs:
+                ev1 = var_to_evidence_ids.get(v1, set())
+                ev2 = var_to_evidence_ids.get(v2, set())
+                if ev1 & ev2:  # shared evidence chunks
+                    candidate_pairs.add((v1, v2))
+                    continue
+                # Check cross-mention: is v1 mentioned in v2's chunks or vice versa?
+                v1_lower = v1.replace("_", " ")
+                v2_lower = v2.replace("_", " ")
+                for eid in ev2:
+                    text = evidence_text_cache.get(eid, "")
+                    if v1_lower in text or v1 in text:
+                        candidate_pairs.add((v1, v2))
+                        break
+                else:
+                    for eid in ev1:
+                        text = evidence_text_cache.get(eid, "")
+                        if v2_lower in text or v2 in text:
+                            candidate_pairs.add((v1, v2))
+                            break
+
+            return list(candidate_pairs)
+
+        filtered_pairs = _prefilter_pairs(variables, evidence_bundles)
+        all_pair_count = len(list(itertools.combinations(variables, 2)))
+        _logger.info(
+            "PyWhyLLM: evidence pre-filter reduced pairs from %d → %d (%.0f%% reduction)",
+            all_pair_count, len(filtered_pairs),
+            (1 - len(filtered_pairs) / max(all_pair_count, 1)) * 100,
+        )
+
         try:
             # Build the safe pairwise checker (same logic as before)
             def _safe_suggest_pairwise(var1: str, var2: str) -> tuple[str | None, str | None, str]:
                 """Thread-safe worker — performs ONE API call, returns a plain tuple."""
-                lm = self._suggester.llm
-                from guidance import system, user, assistant, gen
-                from inspect import cleandoc
+                _tel = _get_telemetry() if _get_telemetry else None
+                _call_t0 = time.monotonic()
+                _parse_answer = ""  # track for telemetry
+                _was_normalized = False
+                _error_str = None
+                _raw_desc = ""
+                try:
+                    lm = self._suggester.llm
+                    from guidance import system, user, assistant, gen
+                    from inspect import cleandoc
 
-                with system():
-                    lm += "You are a helpful assistant for causal reasoning."
-                with user():
-                    prompt_str = (
-                        f"Which cause-and-effect-relationship is more likely? "
-                        f"Provide reasoning and give your final answer (A, B, "
-                        f"or C) in <answer> </answer> tags with the letter only "
-                        f"and no whitespaces.\n"
-                        f"A. {var1} causes {var2} "
-                        f"B. {var2} causes {var1} "
-                        f"C. neither {var1} nor {var2} cause each other."
+                    with system():
+                        lm += "You are a helpful assistant for causal reasoning."
+                    with user():
+                        prompt_str = (
+                            f"Which cause-and-effect-relationship is more likely? "
+                            f"Provide reasoning and give your final answer (A, B, "
+                            f"or C) in <answer> </answer> tags with the letter only "
+                            f"and no whitespaces.\n"
+                            f"A. {var1} causes {var2} "
+                            f"B. {var2} causes {var1} "
+                            f"C. neither {var1} nor {var2} cause each other."
+                        )
+                        lm += cleandoc(prompt_str)
+                    with assistant():
+                        lm += gen("description")
+
+                    description = lm["description"]
+                    _raw_desc = description or ""
+                    _logger.debug(
+                        "PyWhyLLM pairwise (%s, %s) → description=%r",
+                        var1, var2, (_raw_desc)[:200],
                     )
-                    lm += cleandoc(prompt_str)
-                with assistant():
-                    lm += gen("description")
 
-                description = lm["description"]
-                _logger.debug(
-                    "PyWhyLLM pairwise (%s, %s) → description=%r",
-                    var1, var2, (description or "")[:200],
-                )
-                answer = re.findall(r'<answer>(.*?)</answer>', description or "")
-                answer = [ans.strip() for ans in answer]
-                answer_str = "".join(answer)
+                    # Robust answer normalization (replaces brittle equality check)
+                    answer_str = _normalize_answer(_raw_desc)
+                    _parse_answer = answer_str
 
-                if answer_str == "A":
-                    return (var1, var2, description)
-                elif answer_str == "B":
-                    return (var2, var1, description)
-                elif answer_str == "C":
-                    return (None, None, description)
-                else:
-                    _logger.warning(
-                        "PyWhyLLM answer not A/B/C for (%s, %s): %r — treating as no relationship",
-                        var1, var2, answer_str,
-                    )
-                    return (None, None, description)
+                    # Detect if normalization actually recovered an answer that the
+                    # old strict regex+join+equality approach would have missed.
+                    if answer_str in ("A", "B", "C"):
+                        _old_tags = re.findall(r'<answer>(.*?)</answer>', _raw_desc)
+                        _old_joined = "".join(t.strip() for t in _old_tags)
+                        if _old_joined != answer_str:
+                            _was_normalized = True
 
-            # Enumerate all unique pairs
-            pairs = list(itertools.combinations(variables, 2))
+                    if answer_str == "A":
+                        return (var1, var2, description)
+                    elif answer_str == "B":
+                        return (var2, var1, description)
+                    elif answer_str == "C":
+                        return (None, None, description)
+                    else:
+                        _logger.warning(
+                            "[TELEMETRY] PyWhyLLM answer unparseable for (%s, %s): "
+                            "normalized=%r raw_tail=%r — treating as no relationship",
+                            var1, var2, answer_str,
+                            _raw_desc[-200:] if _raw_desc else "(empty)",
+                        )
+                        return (None, None, description)
+                except Exception as _pair_exc:
+                    _error_str = str(_pair_exc)
+                    raise
+                finally:
+                    _call_latency = (time.monotonic() - _call_t0) * 1000
+                    if _tel:
+                        _tel.record_pywhyllm_pair(
+                            var1=var1, var2=var2,
+                            answer=_parse_answer,
+                            raw_description=_raw_desc[:500],
+                            latency_ms=_call_latency,
+                            error=_error_str,
+                            was_normalized=_was_normalized,
+                        )
+
+            # Use pre-filtered pairs instead of blind C(n,2)
+            pairs = filtered_pairs
             total_pairs = len(pairs)
             _logger.info(
                 "PyWhyLLM: checking %d variable pairs concurrently (max_workers=%d)",

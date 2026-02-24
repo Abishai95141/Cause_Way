@@ -33,6 +33,11 @@ from pydantic import BaseModel
 
 from src.config import get_settings
 
+try:
+    from src.utils.telemetry import get_telemetry as _get_telemetry
+except ImportError:
+    _get_telemetry = None
+
 
 T = TypeVar("T", bound=BaseModel)
 
@@ -81,7 +86,7 @@ class LLMClient:
         model: LLMModel = LLMModel.GEMINI_FLASH,
         max_retries: int = 5,
         timeout: float = 60.0,
-        semaphore_limit: int = 8,
+        semaphore_limit: int | None = None,
     ):
         settings = get_settings()
         self.api_key = api_key or settings.google_ai_api_key
@@ -90,6 +95,10 @@ class LLMClient:
         self.timeout = timeout
         self._client = None
         self._mock_mode = self.api_key is None
+        # Read semaphore limit from VerificationConfig if not explicitly set
+        if semaphore_limit is None:
+            from src.config import VerificationConfig
+            semaphore_limit = VerificationConfig().llm_semaphore_limit
         self._semaphore = asyncio.Semaphore(semaphore_limit)
         
         # Mock responses for testing
@@ -153,9 +162,20 @@ class LLMClient:
                         config=config,
                     )
                 
-                latency = (datetime.now(timezone.utc) - start_time).total_seconds() * 1000
-                
                 usage = response.usage_metadata
+                latency = (datetime.now(timezone.utc) - start_time).total_seconds() * 1000
+
+                _tel = _get_telemetry() if _get_telemetry else None
+                if _tel:
+                    _tel.record_llm_call(
+                        model=self.model.value,
+                        prompt_chars=len(full_prompt),
+                        completion_chars=len(response.text or ""),
+                        latency_ms=latency,
+                        prompt_tokens=usage.prompt_token_count if usage else 0,
+                        completion_tokens=usage.candidates_token_count if usage else 0,
+                    )
+
                 return LLMResponse(
                     content=response.text,
                     model=self.model.value,
@@ -168,18 +188,27 @@ class LLMClient:
             except Exception as e:
                 if self._is_daily_quota_error(e):
                     logger.error("Gemini daily quota exhausted (free tier: 20 req/day). Cannot retry.")
+                    _tel = _get_telemetry() if _get_telemetry else None
+                    if _tel:
+                        _tel.record_llm_error(self.model.value, str(e), is_quota=True)
                     raise RuntimeError(
                         "Gemini API daily quota exhausted (free tier: 20 requests/day). "
                         "Wait until tomorrow or upgrade to a paid plan at https://ai.google.dev/pricing"
                     ) from e
                 if attempt < self.max_retries - 1:
                     delay = self._get_retry_delay(e, attempt)
+                    _tel = _get_telemetry() if _get_telemetry else None
+                    if _tel:
+                        _tel.record_llm_retry(self.model.value, attempt + 1, str(e)[:200])
                     logger.warning(
                         "LLM call failed (attempt %d/%d): %s — retrying in %.0fs",
                         attempt + 1, self.max_retries, str(e)[:120], delay,
                     )
                     await asyncio.sleep(delay)
                 else:
+                    _tel = _get_telemetry() if _get_telemetry else None
+                    if _tel:
+                        _tel.record_llm_error(self.model.value, str(e))
                     raise
 
     @staticmethod
@@ -306,16 +335,35 @@ Respond ONLY with the JSON, no other text."""
                     )
 
                 json_data = json.loads(response.text)
+
+                # Telemetry for structured native calls
+                _tel = _get_telemetry() if _get_telemetry else None
+                if _tel:
+                    _tel.record_llm_call(
+                        model=target_model,
+                        prompt_chars=len(full_prompt),
+                        completion_chars=len(response.text or ""),
+                        latency_ms=0,  # not timing individually here
+                        prompt_tokens=getattr(getattr(response, 'usage_metadata', None), 'prompt_token_count', 0) or 0,
+                        completion_tokens=getattr(getattr(response, 'usage_metadata', None), 'candidates_token_count', 0) or 0,
+                    )
+
                 return output_schema.model_validate(json_data)
 
             except Exception as e:
                 if self._is_daily_quota_error(e):
+                    _tel = _get_telemetry() if _get_telemetry else None
+                    if _tel:
+                        _tel.record_llm_error(target_model, str(e), is_quota=True)
                     raise RuntimeError(
                         "Gemini API daily quota exhausted (free tier: 20 requests/day). "
                         "Wait until tomorrow or upgrade to a paid plan at https://ai.google.dev/pricing"
                     ) from e
                 if attempt < self.max_retries - 1:
                     delay = self._get_retry_delay(e, attempt)
+                    _tel = _get_telemetry() if _get_telemetry else None
+                    if _tel:
+                        _tel.record_llm_retry(target_model, attempt + 1, str(e)[:200])
                     logger.warning(
                         "Structured-native call failed (attempt %d/%d): %s — retrying in %.0fs",
                         attempt + 1, self.max_retries, str(e)[:120], delay,
@@ -324,10 +372,13 @@ Respond ONLY with the JSON, no other text."""
                 else:
                     # Final fallback: try prompt-injection method
                     logger.warning(
-                        "Native structured output failed after %d attempts, "
+                        "[TELEMETRY] Native structured output failed after %d attempts, "
                         "falling back to prompt-injection method",
                         self.max_retries,
                     )
+                    _tel = _get_telemetry() if _get_telemetry else None
+                    if _tel:
+                        _tel.record_llm_fallback(target_model)
                     return await self.generate_structured(
                         prompt=prompt,
                         output_schema=output_schema,

@@ -284,7 +284,11 @@ class CausewayAgent:
                     },
                     "max_variables": {
                         "type": "integer",
-                        "description": "Maximum variables to discover (default 20)",
+                        "description": "Hint for variable discovery (0 = unlimited, default 0)",
+                    },
+                    "max_edges": {
+                        "type": "integer",
+                        "description": "Soft hint only (0 = unlimited, default 0). All grounded edges are kept.",
                     },
                 },
                 "required": ["domain", "initial_query"],
@@ -294,12 +298,14 @@ class CausewayAgent:
         async def _handle_mode1(
             domain: str,
             initial_query: str,
-            max_variables: int = 20,
+            max_variables: int = 0,
+            max_edges: int = 0,
         ) -> dict[str, Any]:
             result = await self._mode1.run(
                 domain=domain,
                 initial_query=initial_query,
                 max_variables=max_variables,
+                max_edges=max_edges,
             )
             return {
                 "trace_id": result.trace_id,

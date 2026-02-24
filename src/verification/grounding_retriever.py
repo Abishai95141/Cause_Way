@@ -60,27 +60,7 @@ class GroundingRetriever:
         custom_query: str | None = None,
         doc_ids: list[str] | None = None,
     ) -> GroundingResult:
-        """Retrieve evidence for a single drafted edge.
-
-        Parameters
-        ----------
-        from_var:
-            Source variable name / ID.
-        to_var:
-            Target variable name / ID.
-        mechanism:
-            Description of the causal mechanism linking the variables.
-        custom_query:
-            If provided, overrides the auto-generated search query
-            (used when the judge suggests a refinement).
-        doc_ids:
-            Optional document filter for scoped retrieval.
-
-        Returns
-        -------
-        GroundingResult
-            Support and refutation chunks plus the query that was used.
-        """
+        """Retrieve evidence for a single drafted edge."""
         query = custom_query or self._build_query(from_var, to_var, mechanism)
 
         try:
@@ -90,6 +70,12 @@ class GroundingRetriever:
                 mechanism=mechanism if not custom_query else custom_query,
                 top_k=self.top_k,
             )
+            _logger.info(
+                "[TELEMETRY] GroundingRetriever %s→%s: support=%d refute=%d query=%r",
+                from_var, to_var,
+                len(assessment.supporting), len(assessment.contradicting),
+                query[:100],
+            )
             return GroundingResult(
                 support_chunks=assessment.supporting,
                 refute_chunks=assessment.contradicting,
@@ -97,7 +83,7 @@ class GroundingRetriever:
             )
         except Exception as exc:
             _logger.warning(
-                "Hypothesis-aware retrieval failed for %s→%s, "
+                "[TELEMETRY] Hypothesis-aware retrieval failed for %s→%s, "
                 "falling back to plain hybrid: %s",
                 from_var, to_var, exc,
             )

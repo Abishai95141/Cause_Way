@@ -23,6 +23,11 @@ from pydantic import BaseModel, Field
 from src.agent.llm_client import LLMClient, LLMModel
 from src.models.evidence import EvidenceBundle
 
+try:
+    from src.utils.telemetry import get_telemetry as _get_telemetry
+except ImportError:
+    _get_telemetry = None
+
 _logger = logging.getLogger(__name__)
 
 
@@ -105,7 +110,7 @@ class AdversarialVerdict(BaseModel):
 # ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 _GROUNDING_SYSTEM = textwrap.dedent("""\
-    You are a strict verifier specializing in causal inference.
+    You are a causal-inference verifier.
     Your task is to determine whether provided evidence TEXT supports
     a proposed causal relationship.
 
@@ -113,13 +118,16 @@ _GROUNDING_SYSTEM = textwrap.dedent("""\
     - Accept DIRECT causal evidence (A causes B, A leads to B, A
       drives B, A results in B) — the evidence must explicitly mention
       or clearly imply a causal mechanism.
-    - Also accept well-established domain knowledge stated in business
+    - Accept well-established domain knowledge stated in business
       plans, strategy documents, or industry analyses (e.g. "marketing
       increases customer acquisition" is a widely accepted causal claim
       even without a controlled experiment).
-    - If the text only shows two variables co-occurring without any
-      implied mechanism, classify as "correlation_only" and set
-      is_grounded=false.
+    - Accept evidence describing plans, strategies, or projections that
+      express domain-expert causal beliefs — these are valid for initial
+      model construction even if they lack experimental proof.
+    - If the text only shows two variables co-occurring without ANY
+      implied mechanism or plausible domain-logic connection, classify
+      as "correlation_only" and set is_grounded=false.
     - If the text is about unrelated topics, classify as "irrelevant"
       and set is_grounded=false.
     - When is_grounded=true, extract the EXACT verbatim quote (no
@@ -128,9 +136,12 @@ _GROUNDING_SYSTEM = textwrap.dedent("""\
       in the document corpus, suggest a refined search query in
       suggested_refinement_query.  If you do not believe better evidence
       exists, leave it null.
-    - Be fair: accept claims when the evidence clearly supports a causal
-      relationship, even if the evidence comes from a business plan
-      rather than a scientific study.""")
+    - Be fair and constructive: for initial graph construction, your
+      primary goal is to identify genuine causal relationships even
+      when evidence is indirect.  Accept claims when the evidence
+      plausibly supports a causal link — err on the side of inclusion
+      with an appropriately calibrated confidence score rather than
+      rejecting borderline cases outright.""")
 
 
 _GROUNDING_TEMPLATE = textwrap.dedent("""\
@@ -225,6 +236,7 @@ class VerificationJudge:
 
         Returns a ``VerificationVerdict`` with the judge's assessment.
         """
+        import time as _time
         evidence_block = self._format_evidence(evidence_chunks)
 
         prompt = _GROUNDING_TEMPLATE.format(
@@ -234,6 +246,15 @@ class VerificationJudge:
             evidence_block=evidence_block,
         )
 
+        full_prompt_chars = len(prompt) + len(_GROUNDING_SYSTEM)
+        _logger.info(
+            "[TELEMETRY] Judge evaluate %s→%s: prompt_chars=%d est_tokens=%d "
+            "evidence_chunks=%d evidence_block_chars=%d",
+            from_var, to_var, full_prompt_chars, full_prompt_chars // 4,
+            len(evidence_chunks), len(evidence_block),
+        )
+        _jt0 = _time.monotonic()
+
         verdict = await self.llm.generate_structured_native(
             prompt=prompt,
             output_schema=VerificationVerdict,
@@ -241,10 +262,15 @@ class VerificationJudge:
             model_override=self.judge_model,
         )
 
+        _jt1 = _time.monotonic()
         _logger.info(
-            "Judge verdict for %s→%s: grounded=%s  type=%s  confidence=%.2f",
+            "[TELEMETRY] Judge verdict for %s→%s: grounded=%s  type=%s  confidence=%.2f  "
+            "latency=%.1fs  rejection_reason=%r  refinement=%r",
             from_var, to_var, verdict.is_grounded,
             verdict.support_type.value, verdict.confidence,
+            _jt1 - _jt0,
+            verdict.rejection_reason,
+            (verdict.suggested_refinement_query or "")[:80],
         )
         return verdict
 
@@ -260,6 +286,7 @@ class VerificationJudge:
         Only called for edges that passed the grounding judge with
         ``evidence_strength=strong``.
         """
+        import time as _time
         prompt = _ADVERSARIAL_TEMPLATE.format(
             from_var=from_var,
             to_var=to_var,
@@ -267,18 +294,25 @@ class VerificationJudge:
             supporting_quote=supporting_quote or "(no quote extracted)",
         )
 
+        _tel = _get_telemetry() if _get_telemetry else None
+        if _tel:
+            _tel.verification.total_adversarial_calls += 1
+
+        _at0 = _time.monotonic()
         verdict = await self.llm.generate_structured_native(
             prompt=prompt,
             output_schema=AdversarialVerdict,
             system_prompt=_ADVERSARIAL_SYSTEM,
             model_override=self.judge_model,
         )
+        _at1 = _time.monotonic()
 
         _logger.info(
-            "Adversarial verdict for %s→%s: still_grounded=%s  "
-            "alternatives=%d  confidence=%.2f",
+            "[TELEMETRY] Adversarial verdict for %s→%s: still_grounded=%s  "
+            "alternatives=%d  confidence=%.2f  latency=%.1fs",
             from_var, to_var, verdict.still_grounded,
             len(verdict.alternative_explanations), verdict.confidence,
+            _at1 - _at0,
         )
         return verdict
 

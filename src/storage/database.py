@@ -7,6 +7,7 @@ Provides:
 - CRUD operations via DatabaseService
 """
 
+import logging
 from contextlib import asynccontextmanager
 from datetime import datetime, timezone
 from typing import Any, AsyncGenerator, Optional
@@ -291,10 +292,39 @@ async def get_db_session() -> AsyncGenerator[AsyncSession, None]:
 
 
 async def init_db() -> None:
-    """Initialize database - create all tables."""
+    """Initialize database - create all tables.
+
+    Also runs ``_ensure_schema()`` to add any columns that were added
+    to the ORM after the table was originally created (e.g.
+    ``updated_at``, ``replaces_version`` on ``world_model_versions``).
+    """
     engine = get_engine()
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
+    await _ensure_schema()
+
+
+async def _ensure_schema() -> None:
+    """Idempotent schema migration for columns added after initial create.
+
+    Uses ``ALTER TABLE ... ADD COLUMN IF NOT EXISTS`` so it is safe to
+    run on every startup — no-op when the columns already exist.
+    """
+    engine = get_engine()
+    stmts = [
+        # world_model_versions — added post-v1
+        "ALTER TABLE world_model_versions ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ",
+        "ALTER TABLE world_model_versions ADD COLUMN IF NOT EXISTS replaces_version VARCHAR(128)",
+    ]
+    try:
+        async with engine.begin() as conn:
+            from sqlalchemy import text
+            for stmt in stmts:
+                await conn.execute(text(stmt))
+        logging.getLogger(__name__).info("ensure_schema: columns verified/added")
+    except Exception as exc:
+        # Log but don't crash — table may not exist yet on very first run
+        logging.getLogger(__name__).warning("ensure_schema skipped: %s", exc)
 
 
 async def drop_db() -> None:

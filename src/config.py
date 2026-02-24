@@ -70,29 +70,41 @@ class VerificationConfig(BaseSettings):
 
     # Judge loop
     max_judge_iterations: int = Field(
-        default=3,
-        description="Maximum retrieve→judge cycles per edge before forced failure",
+        default=2,
+        description=(
+            "Maximum retrieve→judge cycles per edge before forced failure. "
+            "Lowered from 3→2 to reduce worst-case verification latency "
+            "(100 judge calls instead of 150 for ~50 edges)."
+        ),
     )
     grounding_confidence_threshold: float = Field(
-        default=0.6,
+        default=0.4,
         ge=0.0,
         le=1.0,
-        description="Minimum judge confidence to accept an edge as grounded",
+        description=(
+            "Minimum judge confidence to accept an edge as grounded. "
+            "Lowered from 0.6→0.4 for initial builds — set "
+            "CAUSEWAY_VERIFY_GROUNDING_CONFIDENCE_THRESHOLD=0.6 for strict mode."
+        ),
     )
     enable_adversarial_pass: bool = Field(
-        default=True,
-        description="Run a devil's-advocate pass on strong edges",
+        default=False,
+        description=(
+            "Run a devil's-advocate pass on strong edges. "
+            "Disabled by default for initial builds to preserve more edges. "
+            "Set CAUSEWAY_VERIFY_ENABLE_ADVERSARIAL_PASS=true for refinement runs."
+        ),
     )
 
     # Model selection
     judge_model: str = Field(
-        default="gemini-2.5-pro",
-        description="LLM model for verification judge (needs strong reasoning)",
+        default="gemini-2.5-flash",
+        description="LLM model for verification judge (Flash for speed; set to gemini-2.5-pro for strict mode)",
     )
 
     # Concurrency & rate-limiting
     llm_semaphore_limit: int = Field(
-        default=8,
+        default=12,
         ge=1,
         description="Max concurrent Gemini API calls (shared semaphore)",
     )

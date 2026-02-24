@@ -55,18 +55,27 @@ class CausalService:
         self._temporal_trackers: dict[str, TemporalTracker] = {}  # domain -> tracker
         self._feedback_collector = FeedbackCollector()
     
-    def create_world_model(self, domain: str) -> DAGEngine:
+    def create_world_model(self, domain: str, replace_existing: bool = True) -> DAGEngine:
         """
         Create a new world model for a domain.
         
         Args:
             domain: Domain description (e.g., "pricing", "customer retention")
+            replace_existing: If True (default), replace any existing model
+                for this domain instead of raising an error.  This is the
+                safe default for rebuild workflows.
             
         Returns:
             New DAGEngine instance
         """
         if domain in self._engines:
-            raise ValueError(f"World model already exists for domain: {domain}")
+            if replace_existing:
+                logger.info(
+                    "Replacing existing world model for domain '%s'", domain,
+                )
+                del self._engines[domain]
+            else:
+                raise ValueError(f"World model already exists for domain: {domain}")
         
         engine = DAGEngine()
         self._engines[domain] = engine
@@ -369,27 +378,30 @@ class CausalService:
                     manual += 1
                     continue
 
+                from_var, to_var = self._parse_conflict_edge(
+                    action.conflict_id, known_var_ids=set(v.variable_id for v in engine.variables),
+                )
+
+                if from_var is None or to_var is None:
+                    if action.remove_edge or action.update_edge_strength:
+                        errors.append(f"Cannot parse edge from conflict_id: {action.conflict_id}")
+                    else:
+                        applied += 1  # No-op action (keep existing)
+                    continue
+
                 if action.remove_edge:
-                    engine.remove_edge(action.conflict_id.split("_")[1],
-                                       action.conflict_id.split("_")[2])
+                    engine.remove_edge(from_var, to_var)
                     applied += 1
                     continue
 
                 if action.update_edge_strength:
-                    # Extract edge endpoints from conflict_id (cf_from_to_seq)
-                    parts = action.conflict_id.split("_")
-                    if len(parts) >= 3:
-                        from_var = parts[1]
-                        to_var = parts[2]
-                        try:
-                            engine.update_edge_strength(
-                                from_var, to_var, action.update_edge_strength,
-                            )
-                            applied += 1
-                        except ValueError:
-                            errors.append(f"Edge not found: {from_var} → {to_var}")
-                    else:
-                        errors.append(f"Cannot parse edge from conflict_id: {action.conflict_id}")
+                    try:
+                        engine.update_edge_strength(
+                            from_var, to_var, action.update_edge_strength,
+                        )
+                        applied += 1
+                    except ValueError:
+                        errors.append(f"Edge not found: {from_var} → {to_var}")
                 else:
                     applied += 1  # No-op actions (keep existing)
 
@@ -399,6 +411,67 @@ class CausalService:
         summary = {"applied": applied, "manual": manual, "errors": errors}
         logger.info("Applied resolutions: %s", summary)
         return summary
+
+    @staticmethod
+    def _parse_conflict_edge(
+        conflict_id: str,
+        known_var_ids: set[str] | None = None,
+    ) -> tuple[str | None, str | None]:
+        """Extract (from_var, to_var) from a conflict_id string.
+
+        Conflict IDs follow patterns like:
+            ``cf_{from_var}_{to_var}_{seq}``
+            ``cf_strength_{from_var}_{to_var}``
+            ``cf_stale_{from_var}_{to_var}_{seq}``
+
+        Variable IDs themselves contain underscores (e.g.
+        ``hiring_process``, ``remote_work_norms``), so naively splitting
+        on ``_`` is wrong.  Instead we try every possible split and
+        prefer splits where both halves are known variable IDs.
+
+        Falls back to ``(None, None)`` when parsing is impossible.
+        """
+        if not conflict_id:
+            return (None, None)
+
+        # Strip common prefixes: cf_, cf_strength_, cf_stale_, cf_missing_
+        body = conflict_id
+        for prefix in ("cf_strength_", "cf_stale_", "cf_missing_", "cf_"):
+            if body.startswith(prefix):
+                body = body[len(prefix):]
+                break
+
+        # Strip trailing sequence number (e.g. _001, _1)
+        import re as _re
+        body = _re.sub(r'_\d+$', '', body)
+
+        if not body:
+            return (None, None)
+
+        # Try splitting body into two variable IDs.
+        parts = body.split("_")
+        if len(parts) < 2:
+            return (None, None)
+
+        # When we know the variable IDs, find the split where both halves
+        # are actual variables.
+        if known_var_ids:
+            for i in range(1, len(parts)):
+                from_var = "_".join(parts[:i])
+                to_var = "_".join(parts[i:])
+                if from_var in known_var_ids and to_var in known_var_ids:
+                    return (from_var, to_var)
+
+        # Fallback: split roughly in the middle
+        mid = len(parts) // 2
+        candidates = sorted(range(1, len(parts)), key=lambda i: abs(i - mid))
+        for i in candidates:
+            from_var = "_".join(parts[:i])
+            to_var = "_".join(parts[i:])
+            if from_var and to_var:
+                return (from_var, to_var)
+
+        return (None, None)
 
     # ------------------------------------------------------------------ #
     # Temporal tracking & feedback  (Phase 4)

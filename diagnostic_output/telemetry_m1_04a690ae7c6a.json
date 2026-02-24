@@ -1,0 +1,1149 @@
+{
+  "summary": {
+    "run_start_utc": "2026-02-23T15:57:24.743407+00:00",
+    "total_run_seconds": 323.0,
+    "stage_durations_seconds": {
+      "variable_discovery": 41.11,
+      "canonicalization": 16.88,
+      "evidence_gathering": 5.01,
+      "dag_drafting": 78.48,
+      "mechanism_synthesis": 24.51,
+      "verification": 157.0,
+      "graph_assembly": 0.01
+    },
+    "variables": {
+      "raw_discovered": 10,
+      "after_canonicalization": 8,
+      "added_to_engine": 8
+    },
+    "llm_calls": {
+      "total": 82,
+      "by_model": {
+        "gemini-2.5-flash": 25,
+        "gemini-2.5-pro": 57
+      },
+      "total_prompt_chars": 328942,
+      "total_completion_chars": 67015,
+      "est_total_prompt_tokens": 82209,
+      "avg_latency_ms": 0.0,
+      "retries": 2,
+      "errors": 0,
+      "quota_errors": 0,
+      "fallbacks_to_prompt_injection": 0
+    },
+    "pywhyllm_pairwise": {
+      "total_pairs": 28,
+      "theoretical_pairs_formula": "C(n,2) = n*(n-1)/2",
+      "edges_found_A": 12,
+      "edges_found_B": 6,
+      "no_relationship_C": 0,
+      "parse_failures": 10,
+      "exceptions": 0,
+      "avg_latency_ms": 8329.3
+    },
+    "edge_dropout": {
+      "pywhyllm_proposed": 18,
+      "langextract_proposed": 10,
+      "total_after_dedup": 28,
+      "after_mechanism_synthesis": 28,
+      "submitted_to_verification": 28,
+      "grounded_by_verification": 22,
+      "rejected_by_verification": 6,
+      "node_not_found_errors": 0,
+      "cycle_detected_errors": 1,
+      "other_add_errors": 0,
+      "final_edges_in_graph": 21
+    },
+    "verification": {
+      "edges_submitted": 28,
+      "judge_calls": 38,
+      "adversarial_calls": 17,
+      "grounded": 22,
+      "rejected": 6,
+      "no_evidence_retrievals": 0,
+      "exhausted_iterations": 2,
+      "duplicate_query_breaks": 0,
+      "adversarial_rejections": 0,
+      "avg_verdict_confidence": 0.98,
+      "rejection_reasons": [
+        {
+          "edge": "quarterly_reforecasting_process->profitability",
+          "reason": "max_iterations_reached (3)",
+          "iterations": 3
+        },
+        {
+          "edge": "forecasting_model->annual_plan",
+          "reason": "The evidence explicitly contrasts the forecasting model and the annual plan. It states, \"we do follow an annual plan to set our goals and measurement for our top-level targets,\" while the forecast is described as a \"dynamic assessment based on current expectations.\" The text does not indicate that the forecasting model is an input to or causes the annual plan; it presents them as distinct processes.",
+          "iterations": 2
+        },
+        {
+          "edge": "revenue_targets->annual_plan",
+          "reason": "The evidence describes the annual plan as a process that includes setting revenue targets, rather than being caused by them. For instance, Chunk 5 lists 'Set targets agreed upon by Product, Marketing and Sales' as one of the steps within the annual planning process. This indicates that the annual plan is the framework used to create or formalize revenue targets, which contradicts the proposed causal direction.",
+          "iterations": 1
+        },
+        {
+          "edge": "expense_management->profitability",
+          "reason": "max_iterations_reached (3)",
+          "iterations": 3
+        },
+        {
+          "edge": "revenue_targets->profitability",
+          "reason": "The evidence indicates that revenue and profitability are both top-level targets set concurrently within the company's financial planning process. The text does not state or imply that setting revenue targets causes or leads to profitability; rather, they are presented as parallel goals.",
+          "iterations": 1
+        },
+        {
+          "edge": "financial_forecast->revenue_targets",
+          "reason": "The evidence suggests the causal relationship is different from the one proposed. Chunk 5 states, \"we do follow an annual plan to set our goals and measurement for our top-level targets of revenue...\" It then describes the forecast as a \"dynamic assessment based on current expectations of financial performance.\" This indicates that the annual plan sets the revenue targets, and the forecast is a tool to track performance against those targets, not the cause of the targets themselves.",
+          "iterations": 3
+        }
+      ]
+    },
+    "var_id_resolve_misses": [],
+    "evidence_cache_size": 23
+  },
+  "pywhyllm_raw_outputs": [
+    {
+      "var1": "quarterly_reforecasting_process",
+      "var2": "financial_forecast",
+      "answer_parsed": "A",
+      "raw_description": "Reasoning:\nThe \"quarterly reforecasting process\" refers to the set of activities, procedures, and methodologies undertaken regularly (quarterly) to update and refine financial predictions. A \"financial forecast\" is the output or result of this process \u2013 the actual prediction itself. Therefore, the process is the mechanism or action that *produces* the forecast. It is illogical for the forecast (the output) to cause the process that creates it.\n\n<answer> A </answer>",
+      "latency_ms": 5081.8,
+      "error": null
+    },
+    {
+      "var1": "quarterly_reforecasting_process",
+      "var2": "annual_plan",
+      "answer_parsed": "B",
+      "raw_description": "Reasoning:\nAn annual plan is typically established at the beginning of a fiscal year, setting the overall goals, budget, and strategy for the entire year. Quarterly reforecasting is a process that occurs *during* the year, after the annual plan has been set. Its purpose is to update, adjust, and refine the initial annual plan and associated forecasts based on actual performance, new information, changing market conditions, and deviations from the original plan. Therefore, the annual plan provide",
+      "latency_ms": 5571.0,
+      "error": null
+    },
+    {
+      "var1": "new_initiatives",
+      "var2": "revenue_targets",
+      "answer_parsed": "",
+      "raw_description": "Reasoning:\nIn typical business planning and strategy, revenue targets are established as goals or objectives that a company aims to achieve. To reach these targets, organizations then devise and implement various strategies, projects, or actions. These actions are often referred to as \"new initiatives\" (e.g., launching new products, entering new markets, implementing new marketing campaigns, improving operational efficiency).\n\nTherefore, the need or desire to meet specific revenue targets acts a",
+      "latency_ms": 6406.9,
+      "error": null
+    },
+    {
+      "var1": "quarterly_reforecasting_process",
+      "var2": "profitability",
+      "answer_parsed": "A",
+      "raw_description": "A quarterly reforecasting process involves regularly updating financial and operational forecasts based on new information. The primary goal of such a process is to enable better decision-making, optimize resource allocation, identify potential risks and opportunities, and make necessary adjustments to strategies and operations. All these actions are intended to improve business performance, including financial outcomes like profitability.\n\nConversely, while a company's level of profitability mi",
+      "latency_ms": 7024.5,
+      "error": null
+    },
+    {
+      "var1": "quarterly_reforecasting_process",
+      "var2": "revenue_targets",
+      "answer_parsed": "B",
+      "raw_description": "In a typical business context:\n\n*   **Revenue targets** are usually established *first* during the budgeting and strategic planning phase. These targets represent the company's financial goals for a given period (e.g., a quarter or year).\n*   The **quarterly reforecasting process** is then implemented *in response* to these targets. Its purpose is to regularly review actual performance, market conditions, and other factors to assess whether the company is on track to meet its pre-established rev",
+      "latency_ms": 7028.9,
+      "error": null
+    },
+    {
+      "var1": "new_initiatives",
+      "var2": "annual_plan",
+      "answer_parsed": "",
+      "raw_description": "Reasoning:\nAn annual plan is a strategic document created by an organization that outlines its goals, objectives, and strategies for the upcoming year. It defines the direction and priorities for the organization's activities. New initiatives are specific projects, programs, or efforts undertaken by the organization.\n\nIn a typical organizational setting, the planning process dictates the actions that follow. The annual plan sets the strategic framework, identifying what needs to be achieved and ",
+      "latency_ms": 7872.8,
+      "error": null
+    },
+    {
+      "var1": "quarterly_reforecasting_process",
+      "var2": "expense_management",
+      "answer_parsed": "A",
+      "raw_description": "Reasoning:\nThe quarterly reforecasting process involves revising financial projections, including expenses, for upcoming periods. This process aims to provide a more accurate outlook based on current information and anticipated changes.\n\nIf the reforecasting process reveals that expenses are projected to be higher than planned, or unsustainable, it would likely prompt an organization to implement or intensify expense management strategies (e.g., cost-cutting measures, spending controls) to bring",
+      "latency_ms": 8014.4,
+      "error": null
+    },
+    {
+      "var1": "new_initiatives",
+      "var2": "expense_management",
+      "answer_parsed": "A",
+      "raw_description": "Option A is more likely.\n\n**Reasoning:**\n\nWhen an organization embarks on \"new_initiatives,\" it almost invariably incurs costs. These can include research and development, hiring new staff, purchasing new equipment, marketing, training, and operational changes. The act of launching and pursuing these new initiatives naturally leads to increased expenditure.\n\nThis increase in spending, or the need to wisely allocate resources for these initiatives, often necessitates \"expense management\" to ensur",
+      "latency_ms": 5261.2,
+      "error": null
+    },
+    {
+      "var1": "new_initiatives",
+      "var2": "forecasting_model",
+      "answer_parsed": "",
+      "raw_description": "Both cause-and-effect relationships can occur, but one is generally more likely or fundamental.\n\nLet's break them down:\n\n*   **A. new_initiatives causes forecasting_model:**\n    *   This scenario suggests that an organization first decides on new initiatives (e.g., launching a new product, entering a new market) and *then*, as a consequence or requirement of these initiatives, develops or adapts a forecasting model to predict the outcomes (e.g., sales, market share, costs) of those specific init",
+      "latency_ms": 10948.5,
+      "error": null
+    },
+    {
+      "var1": "new_initiatives",
+      "var2": "financial_forecast",
+      "answer_parsed": "A",
+      "raw_description": "The more likely cause-and-effect relationship is A.\n\n**Reasoning:**\n\n*   **New initiatives cause financial forecast:** When a company decides to embark on `new_initiatives` (e.g., launching a new product, expanding into a new market, implementing a cost-cutting program), these actions have direct financial implications. Financial analysts must then incorporate the anticipated costs, revenues, investments, and operational changes stemming from these initiatives into their models to generate an up",
+      "latency_ms": 6375.5,
+      "error": null
+    },
+    {
+      "var1": "forecasting_model",
+      "var2": "annual_plan",
+      "answer_parsed": "A",
+      "raw_description": "**Reasoning:**\n\nA forecasting model is designed to predict future trends, such as sales, demand, or economic conditions. These predictions are critical inputs for an organization when developing its annual plan. An annual plan sets objectives, allocates resources, and outlines strategies for the upcoming year, and these decisions are heavily influenced by what is expected to happen in the future, as informed by the forecasting model.\n\nConversely, while the *need* for an annual plan might prompt ",
+      "latency_ms": 5768.1,
+      "error": null
+    },
+    {
+      "var1": "forecasting_model",
+      "var2": "profitability",
+      "answer_parsed": "",
+      "raw_description": "A. forecasting_model causes profitability\n\n**Reasoning:**\nThe primary purpose and intended function of a forecasting model in a business context is to improve decision-making related to operations, strategy, and resource allocation. By providing more accurate predictions about future trends (e.g., demand, market conditions, costs, revenue), a business can:\n*   Optimize inventory levels (reducing waste and stockouts).\n*   Plan production more efficiently.\n*   Allocate resources more effectively.\n",
+      "latency_ms": 7491.4,
+      "error": null
+    },
+    {
+      "var1": "forecasting_model",
+      "var2": "expense_management",
+      "answer_parsed": "B",
+      "raw_description": "**Reasoning:**\n\nA forecasting model, particularly one designed for financial prediction like expenses, heavily relies on historical data to learn patterns and make future predictions. Expense management is the process of tracking, categorizing, and analyzing an organization's expenditures over time. This process generates the historical data that is essential for building, training, and validating a forecasting model.\n\nWithout systematic expense management, there would be insufficient or unrelia",
+      "latency_ms": 7841.6,
+      "error": null
+    },
+    {
+      "var1": "forecasting_model",
+      "var2": "revenue_targets",
+      "answer_parsed": "",
+      "raw_description": "Reasoning:\n\n*   **A. `forecasting_model` causes `revenue_targets`:** A forecasting model predicts future revenue based on historical data and other factors. This prediction *informs* or *influences* the setting of revenue targets, helping to make them realistic or ambitious. However, targets are also driven by strategic goals, market opportunities, and investor expectations, not solely by a model's output. The model provides an input, but doesn't solely *cause* the target.\n\n*   **B. `revenue_tar",
+      "latency_ms": 8952.5,
+      "error": null
+    },
+    {
+      "var1": "forecasting_model",
+      "var2": "financial_forecast",
+      "answer_parsed": "A",
+      "raw_description": "The most likely cause-and-effect relationship is that a forecasting model causes a financial forecast.\n\n**Reasoning:**\nA `forecasting_model` is an algorithm, a system, or a methodology that takes input data and applies certain rules or statistical techniques to predict future outcomes. A `financial_forecast` is the actual prediction or estimation of future financial performance, market trends, or economic conditions.\n\nTherefore, the model is the tool or mechanism used to generate the forecast. Y",
+      "latency_ms": 5398.7,
+      "error": null
+    },
+    {
+      "var1": "quarterly_reforecasting_process",
+      "var2": "forecasting_model",
+      "answer_parsed": "",
+      "raw_description": "Here's the reasoning for each option:\n\n*   **A. quarterly_reforecasting_process causes forecasting_model**\n    *   This implies that the decision to have a regular, quarterly process for reforecasting necessitates the creation or selection of a suitable forecasting model. If an organization decides it needs to update its forecasts every quarter, it will then need to acquire, develop, or adapt a forecasting model that can meet the demands of that process (e.g., speed, data requirements, accuracy ",
+      "latency_ms": 17344.6,
+      "error": null
+    },
+    {
+      "var1": "annual_plan",
+      "var2": "revenue_targets",
+      "answer_parsed": "B",
+      "raw_description": "The more likely cause-and-effect relationship is that revenue targets drive the annual plan.\n\nHere's the reasoning:\n\n1.  **Setting Goals First:** In business planning, organizations typically first establish their desired outcomes and goals. Revenue targets are a critical component of these financial goals. They answer the question: \"How much money do we want to make?\"\n2.  **Planning to Achieve Goals:** Once revenue targets (and other strategic goals) are set, the \"annual plan\" is then developed",
+      "latency_ms": 7117.4,
+      "error": null
+    },
+    {
+      "var1": "new_initiatives",
+      "var2": "profitability",
+      "answer_parsed": "A",
+      "raw_description": "Both relationships have validity and often form a feedback loop in business. However, if forced to choose which is *more likely* as a primary driver or strategic intent:\n\n**Reasoning:**\n\n1.  **New initiatives causing profitability (A):** Companies undertake new initiatives (e.g., launching new products, expanding into new markets, implementing cost-saving technologies) with the explicit goal of improving their financial performance, which includes increasing revenue, reducing costs, and ultimate",
+      "latency_ms": 13760.3,
+      "error": null
+    },
+    {
+      "var1": "annual_plan",
+      "var2": "expense_management",
+      "answer_parsed": "A",
+      "raw_description": "The most likely cause-and-effect relationship is that an annual plan causes expense management.\n\n**Reasoning:**\nAn **annual plan** typically outlines an organization's strategic goals, objectives, activities, and crucially, its financial budget and spending limits for the upcoming year. This plan sets the framework for how resources, including financial resources, will be allocated and utilized.\n\n**Expense management** refers to the processes and systems used to track, monitor, control, and redu",
+      "latency_ms": 6399.3,
+      "error": null
+    },
+    {
+      "var1": "annual_plan",
+      "var2": "profitability",
+      "answer_parsed": "",
+      "raw_description": "An annual plan is a strategic document outlining goals, strategies, and actions for a company over the coming year. Its purpose is to guide operations and resource allocation to achieve desired outcomes, including financial performance.\n\n*   **A. annual_plan causes profitability:** This relationship is highly likely. A well-conceived and effectively executed annual plan sets out strategies for revenue growth, cost control, market penetration, product development, and operational efficiency. If t",
+      "latency_ms": 8084.7,
+      "error": null
+    },
+    {
+      "var1": "profitability",
+      "var2": "expense_management",
+      "answer_parsed": "B",
+      "raw_description": "The most likely cause-and-effect relationship is that expense management causes profitability.\n\n**Reasoning:**\n\n*   **Expense management causes profitability:** By effectively managing expenses (reducing unnecessary costs, negotiating better deals, optimizing spending), a business can lower its cost base. If revenue remains constant or increases, a lower cost base directly leads to higher profits and thus improved profitability. This is a fundamental driver of financial success for businesses.\n*",
+      "latency_ms": 4215.9,
+      "error": null
+    },
+    {
+      "var1": "revenue_targets",
+      "var2": "expense_management",
+      "answer_parsed": "A",
+      "raw_description": "Revenue targets are typically strategic goals set by a company. To achieve these goals, and more importantly, to ensure profitability once these goals are met, companies must carefully manage their expenses. Expense management is often a tactical or operational response to financial goals, including revenue targets. For example, if a company sets an ambitious revenue target, it will likely develop a budget and expense management plan to support the sales and marketing efforts required to hit tha",
+      "latency_ms": 7107.5,
+      "error": null
+    },
+    {
+      "var1": "annual_plan",
+      "var2": "financial_forecast",
+      "answer_parsed": "A",
+      "raw_description": "The annual plan outlines the strategic goals, initiatives, activities, and resource allocations for the upcoming year. It defines *what* the organization intends to do. The financial forecast then translates these planned activities and resource allocations into projected financial outcomes (e.g., revenues, expenses, profits, cash flow).\n\nTherefore, the annual plan provides the necessary inputs and assumptions for creating a realistic financial forecast. You need to know what you plan to *do* be",
+      "latency_ms": 7845.0,
+      "error": null
+    },
+    {
+      "var1": "quarterly_reforecasting_process",
+      "var2": "new_initiatives",
+      "answer_parsed": "",
+      "raw_description": "Both A and B describe plausible relationships, as these activities are often intertwined in a business context. However, one relationship is generally more direct and necessary than the other.\n\nLet's analyze each:\n\n**A. quarterly_reforecasting_process causes new_initiatives**\n*   **Reasoning:** A reforecasting process involves reviewing current performance against forecasts and updating future projections. During this process, an organization might identify gaps, underperformance, emerging oppor",
+      "latency_ms": 23951.7,
+      "error": null
+    },
+    {
+      "var1": "revenue_targets",
+      "var2": "financial_forecast",
+      "answer_parsed": "",
+      "raw_description": "Reasoning:\n\nA **financial forecast** is a prediction of future financial performance based on current trends, historical data, economic conditions, and internal plans. It essentially tells you what revenue you are *expected* to achieve.\n\n**Revenue targets** are specific goals or objectives that a company sets for the revenue it *wants* to achieve.\n\nIt is more logical that a company would first assess its expected financial performance (the **financial forecast**) to understand what is realistica",
+      "latency_ms": 8047.9,
+      "error": null
+    },
+    {
+      "var1": "revenue_targets",
+      "var2": "profitability",
+      "answer_parsed": "A",
+      "raw_description": "Revenue targets are specific goals set for the amount of sales a company aims to achieve. Profitability is the ability to generate profit, which is revenue minus expenses.\n\nHere's the reasoning:\n\n*   **A. revenue_targets causes profitability:** This is generally the more likely scenario. Companies set revenue targets as part of their strategic planning. These targets drive sales, marketing, and operational efforts. If a company successfully meets or exceeds its revenue targets while managing cos",
+      "latency_ms": 8699.3,
+      "error": null
+    },
+    {
+      "var1": "expense_management",
+      "var2": "financial_forecast",
+      "answer_parsed": "B",
+      "raw_description": "Reasoning:\nA financial forecast is a projection of future financial performance, which inherently includes estimations of future expenses. This forecast sets the budget, targets, and strategic direction for an organization's spending. Expense management, on the other hand, is the process of tracking, analyzing, and controlling actual expenses to ensure they align with the pre-determined budgets and financial goals outlined in the forecast.\n\nIn essence, you typically create a financial forecast *",
+      "latency_ms": 6546.9,
+      "error": null
+    },
+    {
+      "var1": "profitability",
+      "var2": "financial_forecast",
+      "answer_parsed": "",
+      "raw_description": "The more likely cause-and-effect relationship is that profitability causes the financial forecast.\n\nHere's the reasoning:\n\n1.  **Profitability causes Financial Forecast:** A financial forecast is a projection of a company's future financial performance. These projections are heavily based on historical data, current performance, and market conditions. If a company has been profitable in the past and is currently profitable, this positive trend will be a primary input into its financial forecast,",
+      "latency_ms": 9061.2,
+      "error": null
+    }
+  ],
+  "events": [
+    {
+      "stage": "variable_discovery",
+      "event": "stage_start",
+      "wall_clock": "2026-02-23T15:57:24.743419+00:00",
+      "elapsed_since_start": 0.0,
+      "data": {}
+    },
+    {
+      "stage": "variable_discovery",
+      "event": "stage_end",
+      "wall_clock": "2026-02-23T15:58:05.850425+00:00",
+      "elapsed_since_start": 41.107,
+      "data": {
+        "elapsed_seconds": 41.107,
+        "variable_count": 10
+      }
+    },
+    {
+      "stage": "canonicalization",
+      "event": "stage_start",
+      "wall_clock": "2026-02-23T15:58:05.850459+00:00",
+      "elapsed_since_start": 41.107,
+      "data": {}
+    },
+    {
+      "stage": "canonicalization",
+      "event": "stage_end",
+      "wall_clock": "2026-02-23T15:58:22.728614+00:00",
+      "elapsed_since_start": 57.985,
+      "data": {
+        "elapsed_seconds": 16.878,
+        "raw_count": 10,
+        "canonical_count": 8,
+        "variables_merged": 2,
+        "canonical_names": [
+          "Quarterly Reforecasting Process",
+          "New Initiatives",
+          "Forecasting Model",
+          "Annual Plan",
+          "Revenue Targets",
+          "Profitability",
+          "Expense Management",
+          "Financial Forecast"
+        ]
+      }
+    },
+    {
+      "stage": "evidence_gathering",
+      "event": "stage_start",
+      "wall_clock": "2026-02-23T15:58:22.728654+00:00",
+      "elapsed_since_start": 57.985,
+      "data": {}
+    },
+    {
+      "stage": "evidence_gathering",
+      "event": "stage_end",
+      "wall_clock": "2026-02-23T15:58:27.738472+00:00",
+      "elapsed_since_start": 62.995,
+      "data": {
+        "elapsed_seconds": 5.01,
+        "variables_queried": 8,
+        "total_bundles_cached": 23,
+        "bundles_per_variable": {
+          "Quarterly Reforecasting Process": 3,
+          "New Initiatives": 3,
+          "Forecasting Model": 3,
+          "Annual Plan": 3,
+          "Revenue Targets": 3,
+          "Profitability": 3,
+          "Expense Management": 3,
+          "Financial Forecast": 3
+        }
+      }
+    },
+    {
+      "stage": "dag_drafting",
+      "event": "stage_start",
+      "wall_clock": "2026-02-23T15:58:27.738515+00:00",
+      "elapsed_since_start": 62.995,
+      "data": {}
+    },
+    {
+      "stage": "dag_drafting",
+      "event": "stage_end",
+      "wall_clock": "2026-02-23T15:59:46.222220+00:00",
+      "elapsed_since_start": 141.479,
+      "data": {
+        "elapsed_seconds": 78.484,
+        "total_edges_drafted": 28,
+        "edge_list": [
+          "quarterly_reforecasting_process->financial_forecast (hypothesis)",
+          "annual_plan->quarterly_reforecasting_process (strong)",
+          "quarterly_reforecasting_process->profitability (moderate)",
+          "revenue_targets->quarterly_reforecasting_process (hypothesis)",
+          "quarterly_reforecasting_process->expense_management (hypothesis)",
+          "new_initiatives->expense_management (moderate)",
+          "new_initiatives->financial_forecast (moderate)",
+          "forecasting_model->annual_plan (strong)",
+          "expense_management->forecasting_model (moderate)",
+          "forecasting_model->financial_forecast (moderate)",
+          "revenue_targets->annual_plan (strong)",
+          "new_initiatives->profitability (strong)",
+          "annual_plan->expense_management (strong)",
+          "expense_management->profitability (moderate)",
+          "revenue_targets->expense_management (hypothesis)",
+          "annual_plan->financial_forecast (strong)",
+          "revenue_targets->profitability (moderate)",
+          "financial_forecast->expense_management (hypothesis)",
+          "quarterly_reforecasting_process->new_initiatives (strong)",
+          "new_initiatives->forecasting_model (strong)",
+          "quarterly_reforecasting_process->forecasting_model (strong)",
+          "annual_plan->revenue_targets (strong)",
+          "annual_plan->profitability (strong)",
+          "revenue_targets->financial_forecast (strong)",
+          "expense_management->financial_forecast (strong)",
+          "financial_forecast->revenue_targets (strong)",
+          "financial_forecast->profitability (strong)",
+          "annual_plan->forecasting_model (strong)"
+        ]
+      }
+    },
+    {
+      "stage": "mechanism_synthesis",
+      "event": "stage_start",
+      "wall_clock": "2026-02-23T15:59:46.222276+00:00",
+      "elapsed_since_start": 141.479,
+      "data": {}
+    },
+    {
+      "stage": "mechanism_synthesis",
+      "event": "stage_end",
+      "wall_clock": "2026-02-23T16:00:10.728297+00:00",
+      "elapsed_since_start": 165.985,
+      "data": {
+        "elapsed_seconds": 24.506,
+        "edges_synthesized": 28
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "stage_start",
+      "wall_clock": "2026-02-23T16:00:10.728335+00:00",
+      "elapsed_since_start": 165.985,
+      "data": {}
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T16:00:46.462596+00:00",
+      "elapsed_since_start": 201.719,
+      "data": {
+        "edge": "quarterly_reforecasting_process->financial_forecast",
+        "iteration": 1,
+        "is_grounded": true,
+        "confidence": 1.0,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 2716
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T16:00:46.462730+00:00",
+      "elapsed_since_start": 201.719,
+      "data": {
+        "edge": "revenue_targets->quarterly_reforecasting_process",
+        "iteration": 1,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "irrelevant",
+        "has_refinement": true,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 3595
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T16:00:47.082494+00:00",
+      "elapsed_since_start": 202.339,
+      "data": {
+        "edge": "annual_plan->quarterly_reforecasting_process",
+        "iteration": 1,
+        "is_grounded": true,
+        "confidence": 1.0,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 4739
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T16:00:47.082934+00:00",
+      "elapsed_since_start": 202.34,
+      "data": {
+        "edge": "new_initiatives->expense_management",
+        "iteration": 1,
+        "is_grounded": true,
+        "confidence": 1.0,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 3081
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T16:00:47.083326+00:00",
+      "elapsed_since_start": 202.34,
+      "data": {
+        "edge": "new_initiatives->financial_forecast",
+        "iteration": 1,
+        "is_grounded": true,
+        "confidence": 1.0,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 3556
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T16:00:47.083714+00:00",
+      "elapsed_since_start": 202.34,
+      "data": {
+        "edge": "quarterly_reforecasting_process->profitability",
+        "iteration": 1,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "correlation_only",
+        "has_refinement": true,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 6414
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T16:00:47.679721+00:00",
+      "elapsed_since_start": 202.936,
+      "data": {
+        "edge": "quarterly_reforecasting_process->expense_management",
+        "iteration": 1,
+        "is_grounded": true,
+        "confidence": 0.9,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 4612
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T16:00:47.679826+00:00",
+      "elapsed_since_start": 202.936,
+      "data": {
+        "edge": "forecasting_model->annual_plan",
+        "iteration": 1,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "irrelevant",
+        "has_refinement": true,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 2823
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T16:00:59.521097+00:00",
+      "elapsed_since_start": 214.778,
+      "data": {
+        "edge": "forecasting_model->financial_forecast",
+        "iteration": 1,
+        "is_grounded": true,
+        "confidence": 1.0,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 2674
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T16:01:00.374876+00:00",
+      "elapsed_since_start": 215.631,
+      "data": {
+        "edge": "new_initiatives->profitability",
+        "iteration": 1,
+        "is_grounded": true,
+        "confidence": 1.0,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 7,
+        "evidence_block_chars": 4576
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T16:01:00.382765+00:00",
+      "elapsed_since_start": 215.639,
+      "data": {
+        "edge": "annual_plan->financial_forecast",
+        "iteration": 1,
+        "is_grounded": true,
+        "confidence": 1.0,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 2799
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T16:01:01.236052+00:00",
+      "elapsed_since_start": 216.493,
+      "data": {
+        "edge": "revenue_targets->annual_plan",
+        "iteration": 1,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "irrelevant",
+        "has_refinement": false,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 3885
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T16:01:01.362493+00:00",
+      "elapsed_since_start": 216.619,
+      "data": {
+        "edge": "expense_management->profitability",
+        "iteration": 1,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "correlation_only",
+        "has_refinement": true,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 3243
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T16:01:01.971427+00:00",
+      "elapsed_since_start": 217.228,
+      "data": {
+        "edge": "revenue_targets->expense_management",
+        "iteration": 1,
+        "is_grounded": true,
+        "confidence": 0.9,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 2808
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T16:01:02.461702+00:00",
+      "elapsed_since_start": 217.718,
+      "data": {
+        "edge": "annual_plan->expense_management",
+        "iteration": 1,
+        "is_grounded": true,
+        "confidence": 1.0,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 3656
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T16:01:08.842867+00:00",
+      "elapsed_since_start": 224.099,
+      "data": {
+        "edge": "expense_management->forecasting_model",
+        "iteration": 1,
+        "is_grounded": true,
+        "confidence": 0.9,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 3151
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T16:01:09.209284+00:00",
+      "elapsed_since_start": 224.466,
+      "data": {
+        "edge": "quarterly_reforecasting_process->forecasting_model",
+        "iteration": 1,
+        "is_grounded": true,
+        "confidence": 1.0,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 3557
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T16:01:09.823834+00:00",
+      "elapsed_since_start": 225.08,
+      "data": {
+        "edge": "new_initiatives->forecasting_model",
+        "iteration": 1,
+        "is_grounded": true,
+        "confidence": 1.0,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 3572
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T16:01:11.189992+00:00",
+      "elapsed_since_start": 226.447,
+      "data": {
+        "edge": "annual_plan->revenue_targets",
+        "iteration": 1,
+        "is_grounded": true,
+        "confidence": 1.0,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 3656
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T16:01:11.550135+00:00",
+      "elapsed_since_start": 226.807,
+      "data": {
+        "edge": "quarterly_reforecasting_process->new_initiatives",
+        "iteration": 1,
+        "is_grounded": true,
+        "confidence": 1.0,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 4176
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T16:01:11.671720+00:00",
+      "elapsed_since_start": 226.928,
+      "data": {
+        "edge": "revenue_targets->profitability",
+        "iteration": 1,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "correlation_only",
+        "has_refinement": false,
+        "evidence_chunk_count": 7,
+        "evidence_block_chars": 4236
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T16:01:12.787485+00:00",
+      "elapsed_since_start": 228.044,
+      "data": {
+        "edge": "financial_forecast->expense_management",
+        "iteration": 1,
+        "is_grounded": true,
+        "confidence": 1.0,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 3064
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T16:01:13.642922+00:00",
+      "elapsed_since_start": 228.9,
+      "data": {
+        "edge": "annual_plan->profitability",
+        "iteration": 1,
+        "is_grounded": true,
+        "confidence": 1.0,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 7,
+        "evidence_block_chars": 4215
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T16:01:19.420938+00:00",
+      "elapsed_since_start": 234.678,
+      "data": {
+        "edge": "financial_forecast->revenue_targets",
+        "iteration": 1,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "irrelevant",
+        "has_refinement": true,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 2281
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T16:01:20.051234+00:00",
+      "elapsed_since_start": 235.308,
+      "data": {
+        "edge": "expense_management->financial_forecast",
+        "iteration": 1,
+        "is_grounded": true,
+        "confidence": 1.0,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 2795
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T16:01:21.014998+00:00",
+      "elapsed_since_start": 236.272,
+      "data": {
+        "edge": "revenue_targets->financial_forecast",
+        "iteration": 1,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "correlation_only",
+        "has_refinement": true,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 3354
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T16:01:22.003285+00:00",
+      "elapsed_since_start": 237.26,
+      "data": {
+        "edge": "financial_forecast->profitability",
+        "iteration": 1,
+        "is_grounded": true,
+        "confidence": 0.95,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 7,
+        "evidence_block_chars": 3737
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T16:01:22.864702+00:00",
+      "elapsed_since_start": 238.121,
+      "data": {
+        "edge": "revenue_targets->quarterly_reforecasting_process",
+        "iteration": 2,
+        "is_grounded": true,
+        "confidence": 1.0,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 4432
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T16:01:23.112149+00:00",
+      "elapsed_since_start": 238.369,
+      "data": {
+        "edge": "annual_plan->forecasting_model",
+        "iteration": 1,
+        "is_grounded": true,
+        "confidence": 1.0,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 6,
+        "evidence_block_chars": 2871
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T16:01:33.586856+00:00",
+      "elapsed_since_start": 248.843,
+      "data": {
+        "edge": "forecasting_model->annual_plan",
+        "iteration": 2,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "irrelevant",
+        "has_refinement": false,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 3762
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T16:01:44.896149+00:00",
+      "elapsed_since_start": 260.153,
+      "data": {
+        "edge": "expense_management->profitability",
+        "iteration": 2,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "correlation_only",
+        "has_refinement": true,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 2527
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T16:01:46.374886+00:00",
+      "elapsed_since_start": 261.631,
+      "data": {
+        "edge": "quarterly_reforecasting_process->profitability",
+        "iteration": 2,
+        "is_grounded": false,
+        "confidence": 0.9,
+        "support_type": "correlation_only",
+        "has_refinement": true,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 2702
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T16:02:03.726202+00:00",
+      "elapsed_since_start": 278.983,
+      "data": {
+        "edge": "financial_forecast->revenue_targets",
+        "iteration": 2,
+        "is_grounded": false,
+        "confidence": 0.9,
+        "support_type": "correlation_only",
+        "has_refinement": true,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 4908
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T16:02:11.940704+00:00",
+      "elapsed_since_start": 287.197,
+      "data": {
+        "edge": "revenue_targets->financial_forecast",
+        "iteration": 2,
+        "is_grounded": false,
+        "confidence": 0.9,
+        "support_type": "correlation_only",
+        "has_refinement": true,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 1917
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T16:02:14.768249+00:00",
+      "elapsed_since_start": 290.025,
+      "data": {
+        "edge": "expense_management->profitability",
+        "iteration": 3,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "correlation_only",
+        "has_refinement": true,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 2135
+      }
+    },
+    {
+      "stage": "llm",
+      "event": "retry",
+      "wall_clock": "2026-02-23T16:02:16.125062+00:00",
+      "elapsed_since_start": 291.382,
+      "data": {
+        "model": "gemini-2.5-pro",
+        "attempt": 1,
+        "error": "1 validation error for AdversarialVerdict\nconfidence\n  Input should be less than or equal to 1 [type=less_than_equal, input_value=8.5, input_type=float]\n    For further information visit https://error"
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T16:02:19.071197+00:00",
+      "elapsed_since_start": 294.328,
+      "data": {
+        "edge": "financial_forecast->revenue_targets",
+        "iteration": 3,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "irrelevant",
+        "has_refinement": false,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 3871
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T16:02:19.560026+00:00",
+      "elapsed_since_start": 294.817,
+      "data": {
+        "edge": "quarterly_reforecasting_process->profitability",
+        "iteration": 3,
+        "is_grounded": false,
+        "confidence": 1.0,
+        "support_type": "correlation_only",
+        "has_refinement": true,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 2702
+      }
+    },
+    {
+      "stage": "llm",
+      "event": "retry",
+      "wall_clock": "2026-02-23T16:02:23.857317+00:00",
+      "elapsed_since_start": 299.114,
+      "data": {
+        "model": "gemini-2.5-pro",
+        "attempt": 1,
+        "error": "1 validation error for AdversarialVerdict\nconfidence\n  Input should be less than or equal to 1 [type=less_than_equal, input_value=8.5, input_type=float]\n    For further information visit https://error"
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "judge_verdict",
+      "wall_clock": "2026-02-23T16:02:27.806298+00:00",
+      "elapsed_since_start": 303.063,
+      "data": {
+        "edge": "revenue_targets->financial_forecast",
+        "iteration": 3,
+        "is_grounded": true,
+        "confidence": 0.9,
+        "support_type": "direct_causal",
+        "has_refinement": false,
+        "evidence_chunk_count": 5,
+        "evidence_block_chars": 2522
+      }
+    },
+    {
+      "stage": "verification",
+      "event": "stage_end",
+      "wall_clock": "2026-02-23T16:02:47.730668+00:00",
+      "elapsed_since_start": 322.987,
+      "data": {
+        "elapsed_seconds": 157.002,
+        "total_edges": 28,
+        "grounded": 22,
+        "rejected": 6
+      }
+    },
+    {
+      "stage": "graph_assembly",
+      "event": "stage_start",
+      "wall_clock": "2026-02-23T16:02:47.730946+00:00",
+      "elapsed_since_start": 322.988,
+      "data": {}
+    },
+    {
+      "stage": "graph_assembly",
+      "event": "stage_end",
+      "wall_clock": "2026-02-23T16:02:47.737671+00:00",
+      "elapsed_since_start": 322.994,
+      "data": {
+        "elapsed_seconds": 0.007,
+        "variables_added": 8,
+        "edges_added": 21,
+        "edges_rejected_at_add": 1
+      }
+    },
+    {
+      "stage": "pipeline",
+      "event": "run_complete",
+      "wall_clock": "2026-02-23T16:02:47.739579+00:00",
+      "elapsed_since_start": 322.996,
+      "data": {
+        "variables": 8,
+        "edges": 21,
+        "evidence": 24
+      }
+    }
+  ]
+}

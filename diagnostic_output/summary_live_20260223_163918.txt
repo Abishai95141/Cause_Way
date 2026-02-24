@@ -1,0 +1,61 @@
+========================================================================
+ PIPELINE TELEMETRY SUMMARY
+========================================================================
+Total run time:    626.5s
+
+── Stage Durations ──
+  variable_discovery                  38.8s  (  6.2%)
+  canonicalization                   119.1s  ( 19.0%)
+  evidence_gathering                  12.5s  (  2.0%)
+  dag_drafting                       233.9s  ( 37.3%)
+  mechanism_synthesis                 43.2s  (  6.9%)
+  verification                       178.6s  ( 28.5%)
+  graph_assembly                       0.0s  (  0.0%)
+
+── Variables ──
+  Raw discovered:          20
+  After canonicalization:  20
+  Added to engine:         20
+
+── LLM Calls ──
+  Total calls:     106
+  By model:        {'gemini-2.5-flash': 34, 'gemini-2.5-pro': 72}
+  Avg latency:     170ms
+  Retries:         4
+  Errors:          0
+  Quota errors:    0
+  Fallbacks:       1
+
+── PyWhyLLM Pairwise ──
+  Total pairs:     190
+  A (var1→var2):   38
+  B (var2→var1):   79
+  C (no relation): 1
+  Parse failures:  72
+  Exceptions:      0
+  Avg latency:     8419ms
+
+── Edge Dropout Cascade ──
+  PyWhyLLM proposed:           117
+  LangExtract proposed:        7
+  After dedup:                 50
+  Submitted to verification:   50
+  Grounded by verification:    41
+  Rejected by verification:    9
+  NodeNotFound errors:         0
+  CycleDetected errors:        0
+  Other add errors:            0
+  Final edges in graph:        41
+
+── Verification ──
+  Judge calls:             72
+  Adversarial calls:       0
+  Grounded:                41
+  Rejected:                9
+  No evidence:             0
+  Exhausted iterations:    7
+  Avg verdict confidence:  0.919
+
+── Var ID Resolve Misses ──
+  Total: 0
+========================================================================

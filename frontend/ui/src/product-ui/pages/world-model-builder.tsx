@@ -1,4 +1,4 @@
-import { useState, useMemo, useCallback, useEffect } from "react";
+import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   Network,
@@ -37,15 +37,16 @@ import { Input } from "@/product-ui/components/ui/input";
 import { Textarea } from "@/product-ui/components/ui/textarea";
 import { Badge } from "@/product-ui/components/ui/badge";
 import { Progress } from "@/product-ui/components/ui/progress";
-import { useExecuteMode1, useMode1Stage, useModels, useApproveModel, useDocuments } from "@/product-ui/api/hooks";
+import { useExecuteMode1, useMode1Stage, useModels, useApproveModel, useDocuments, queryKeys } from "@/product-ui/api/hooks";
 import { cn } from "@/product-ui/lib/utils";
 import { toast } from "sonner";
+import { useQueryClient } from "@tanstack/react-query";
 
 const stages = [
   { key: "variable_discovery", label: "Variable Discovery", icon: Search, desc: "Discovering causal variables from evidence" },
   { key: "evidence_gathering", label: "Evidence Gathering", icon: Sparkles, desc: "Deep-searching for supporting evidence" },
-  { key: "edge_proposal", label: "Edge Proposal", icon: Link, desc: "Proposing causal relationships" },
-  { key: "validation", label: "Validation", icon: Shield, desc: "Cross-checking evidence & detecting conflicts" },
+  { key: "dag_drafting", label: "Edge Proposal", icon: Link, desc: "Proposing causal relationships via PyWhyLLM" },
+  { key: "evidence_triangulation", label: "Validation", icon: Shield, desc: "Cross-checking evidence & detecting conflicts" },
   { key: "human_review", label: "Human Review", icon: Eye, desc: "Awaiting your approval" },
   { key: "complete", label: "Complete", icon: Rocket, desc: "World model is active" },
 ];
@@ -62,20 +63,47 @@ export function WorldModelBuilderPage() {
   const [currentStageIdx, setCurrentStageIdx] = useState(-1);
   const [selectedDocIds, setSelectedDocIds] = useState<string[]>([]);
 
+  const qc = useQueryClient();
   const executeMutation = useExecuteMode1();
   const approveMutation = useApproveModel();
   const { data: stageData } = useMode1Stage(buildState === "building");
   const { data: serverDocs } = useDocuments();
+  // Guard: ignore the very first stale poll after clicking Build
+  const buildStartedRef = useRef(false);
 
   // Sync stage data into state (avoid render-phase setState)
   useEffect(() => {
-    if (stageData?.stage && buildState === "building") {
-      const idx = stages.findIndex((s) => s.key === stageData.stage);
-      if (idx >= 0 && idx !== currentStageIdx) {
-        setCurrentStageIdx(idx);
-        if (stageData.stage === "human_review") setBuildState("review");
-        else if (stageData.stage === "complete") setBuildState("complete");
-      }
+    if (!stageData?.stage || buildState !== "building") return;
+
+    // Ignore stale "complete"/"human_review" from a previous run before
+    // the new pipeline has actually started (the POST hasn't resolved yet).
+    if (
+      !buildStartedRef.current &&
+      (stageData.stage === "complete" || stageData.stage === "human_review")
+    ) {
+      return;
+    }
+
+    // Once we see any non-terminal stage, the pipeline is running.
+    if (
+      stageData.stage !== "complete" &&
+      stageData.stage !== "human_review" &&
+      stageData.stage !== "idle"
+    ) {
+      buildStartedRef.current = true;
+    }
+
+    const idx = stages.findIndex((s) => s.key === stageData.stage);
+    if (idx >= 0 && idx !== currentStageIdx) {
+      setCurrentStageIdx(idx);
+      if (stageData.stage === "human_review") setBuildState("review");
+      else if (stageData.stage === "complete") setBuildState("complete");
+    }
+
+    // Handle backend error stage
+    if (stageData.stage === "error") {
+      setBuildState("error");
+      toast.error(stageData.detail ?? "Pipeline failed");
     }
   }, [stageData, buildState, currentStageIdx]);
 
@@ -84,13 +112,26 @@ export function WorldModelBuilderPage() {
       toast.error("Please provide both a domain name and initial query.");
       return;
     }
+
+    // Clear stale stage data so the first poll doesn't see a leftover "complete"
+    qc.removeQueries({ queryKey: queryKeys.mode1Stage });
+    buildStartedRef.current = false;
+
     setBuildState("building");
     setCurrentStageIdx(0);
     executeMutation.mutate(
       { domain: domain.trim(), query: query.trim(), maxVars, maxEdges, docIds: selectedDocIds.length > 0 ? selectedDocIds : undefined },
       {
-        onSuccess: () => toast.success("World model construction started!"),
-        onError: () => { setBuildState("error"); toast.error("Failed to start model construction."); },
+        onSuccess: () => {
+          // The backend now returns immediately; the pipeline runs as a background task.
+          buildStartedRef.current = true;
+          toast.success("World model construction started!");
+        },
+        onError: (err) => {
+          setBuildState("error");
+          const msg = err instanceof Error ? err.message : "Failed to start model construction.";
+          toast.error(msg);
+        },
       }
     );
   };
@@ -107,6 +148,8 @@ export function WorldModelBuilderPage() {
     setCurrentStageIdx(-1);
     setDomain("");
     setQuery("");
+    buildStartedRef.current = false;
+    qc.removeQueries({ queryKey: queryKeys.mode1Stage });
   };
 
   const progressPercent = buildState === "complete" ? 100 : Math.max(0, ((currentStageIdx + 1) / stages.length) * 100);

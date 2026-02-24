@@ -30,6 +30,7 @@ from src.extraction.service import (
     SynthesizedMechanism,
 )
 from src.utils.text import truncate_evidence, canonicalize_var_id
+from src.utils.telemetry import get_telemetry
 
 from src.agent.orchestrator import AgentOrchestrator
 from src.agent.llm_client import LLMClient
@@ -180,8 +181,8 @@ class Mode1WorldModelConstruction:
         self,
         domain: str,
         initial_query: str,
-        max_variables: int = 20,
-        max_edges: int = 50,
+        max_variables: int = 0,
+        max_edges: int = 0,
         doc_ids: list[str] | None = None,
     ) -> Mode1Result:
         """
@@ -190,8 +191,10 @@ class Mode1WorldModelConstruction:
         Args:
             domain: Decision domain (e.g., "pricing", "retention")
             initial_query: Starting query for evidence gathering
-            max_variables: Maximum variables to discover
-            max_edges: Maximum edges to create
+            max_variables: Hint for variable discovery (0 = no limit).
+                All valid variables pass through regardless of this value.
+            max_edges: Soft hint only (0 = no limit).
+                All verified/grounded edges are kept; nothing is truncated.
             doc_ids: Optional list of document IDs to restrict retrieval to.
                      When provided, only evidence from these documents is used.
             
@@ -200,15 +203,22 @@ class Mode1WorldModelConstruction:
         """
         trace_id = f"m1_{uuid4().hex[:12]}"
         audit_entries = []
+        _tel = get_telemetry()
+        _tel.reset()
+        _logger.info("[TELEMETRY] Pipeline run starting: domain=%s, max_variables=%d, max_edges=%d",
+                     domain, max_variables, max_edges)
         
         try:
             # Stage 1: Variable Discovery
             self._current_stage = Mode1Stage.VARIABLE_DISCOVERY
+            _tel.stage_start("variable_discovery")
             audit_entries.append(self._create_audit(
                 trace_id, "variable_discovery_start", {"domain": domain}
             ))
             
             variables = await self._discover_variables(domain, initial_query, max_variables, doc_ids=doc_ids)
+            _tel.variable_count_raw = len(variables)
+            _tel.stage_end("variable_discovery", {"variable_count": len(variables)})
             audit_entries.append(self._create_audit(
                 trace_id, "variable_discovery_complete", 
                 {"count": len(variables)}
@@ -216,7 +226,15 @@ class Mode1WorldModelConstruction:
 
             # Stage 1.5: Variable Canonicalization — merge semantic duplicates
             raw_count = len(variables)
+            _tel.stage_start("canonicalization")
             variables = await self._canonicalize_variables(variables, domain)
+            _tel.variable_count_canonical = len(variables)
+            _tel.stage_end("canonicalization", {
+                "raw_count": raw_count,
+                "canonical_count": len(variables),
+                "variables_merged": raw_count - len(variables),
+                "canonical_names": [v.name for v in variables],
+            })
             audit_entries.append(self._create_audit(
                 trace_id, "variable_canonicalization_complete",
                 {"raw_count": raw_count, "canonical_count": len(variables)}
@@ -224,7 +242,16 @@ class Mode1WorldModelConstruction:
             
             # Stage 2: Evidence Gathering
             self._current_stage = Mode1Stage.EVIDENCE_GATHERING
+            _tel.stage_start("evidence_gathering")
             evidence_map = await self._gather_evidence(variables, doc_ids=doc_ids)
+            _tel.evidence_cache_size = len(self._evidence_cache)
+            _tel.stage_end("evidence_gathering", {
+                "variables_queried": len(variables),
+                "total_bundles_cached": len(self._evidence_cache),
+                "bundles_per_variable": {
+                    k: len(v) for k, v in evidence_map.items()
+                },
+            })
             audit_entries.append(self._create_audit(
                 trace_id, "evidence_gathering_complete",
                 {"evidence_count": len(self._evidence_cache)}
@@ -232,7 +259,16 @@ class Mode1WorldModelConstruction:
             
             # Stage 3: DAG Drafting
             self._current_stage = Mode1Stage.DAG_DRAFTING
+            _tel.stage_start("dag_drafting")
             edges = await self._draft_dag(domain, variables, max_edges)
+            _tel.edge_dropout.total_after_dedup = len(edges)
+            _tel.stage_end("dag_drafting", {
+                "total_edges_drafted": len(edges),
+                "edge_list": [
+                    f"{e.from_var}->{e.to_var} ({e.strength.value if hasattr(e.strength, 'value') else e.strength})"
+                    for e in edges
+                ],
+            })
             audit_entries.append(self._create_audit(
                 trace_id, "dag_drafting_complete",
                 {"edge_count": len(edges)}
@@ -240,7 +276,10 @@ class Mode1WorldModelConstruction:
 
             # Stage 3.5: Mechanism Synthesis — replace raw evidence
             # copy-paste with LLM-synthesized causal reasoning
+            _tel.stage_start("mechanism_synthesis")
             edges = await self._synthesize_mechanisms(edges)
+            _tel.edge_dropout.after_mechanism_synthesis = len(edges)
+            _tel.stage_end("mechanism_synthesis", {"edges_synthesized": len(edges)})
             audit_entries.append(self._create_audit(
                 trace_id, "mechanism_synthesis_complete",
                 {"edges_synthesized": len(edges)}
@@ -249,6 +288,7 @@ class Mode1WorldModelConstruction:
             # Stage 4: Agentic Verification Loop
             # Replaces naive triangulation with Proposer-Retriever-Judge
             self._current_stage = Mode1Stage.EVIDENCE_TRIANGULATION
+            _tel.stage_start("verification")
 
             edge_dicts = [
                 {
@@ -259,6 +299,9 @@ class Mode1WorldModelConstruction:
                 }
                 for e in edges
             ]
+            _tel.verification.total_edges_submitted = len(edge_dicts)
+            _tel.edge_dropout.submitted_to_verification = len(edge_dicts)
+            _logger.info("[TELEMETRY] Submitting %d edges to verification loop", len(edge_dicts))
             verification_results = await self.verifier.verify_all_edges(
                 edge_dicts,
                 doc_ids=doc_ids,
@@ -267,6 +310,25 @@ class Mode1WorldModelConstruction:
 
             grounded_count = sum(1 for vr in verification_results if vr.grounded)
             rejected_count = len(verification_results) - grounded_count
+            _tel.edge_dropout.grounded_by_verification = grounded_count
+            _tel.edge_dropout.rejected_by_verification = rejected_count
+            _tel.stage_end("verification", {
+                "total_edges": len(verification_results),
+                "grounded": grounded_count,
+                "rejected": rejected_count,
+            })
+            _logger.info(
+                "[TELEMETRY] Verification complete: %d/%d grounded, %d rejected",
+                grounded_count, len(verification_results), rejected_count,
+            )
+            # Log every rejected edge with detail
+            for vr in verification_results:
+                if not vr.grounded:
+                    _logger.warning(
+                        "[TELEMETRY] REJECTED edge %s->%s: reason=%s, iterations=%d, confidences=%s",
+                        vr.from_var, vr.to_var, vr.rejection_reason, vr.iterations_used,
+                        [v.confidence for v in (vr.verdicts or [])],
+                    )
             audit_entries.append(self._create_audit(
                 trace_id, "verification_loop_complete",
                 {
@@ -284,6 +346,7 @@ class Mode1WorldModelConstruction:
             engine = self.causal.create_world_model(domain)
             
             # Add variables
+            _tel.stage_start("graph_assembly")
             added_var_ids: set[str] = set()
             for var in variables:
                 var_id = canonicalize_var_id(var.name)
@@ -301,8 +364,12 @@ class Mode1WorldModelConstruction:
                     )
                     added_var_ids.add(var_id)
                 except Exception as _var_err:
-                    _logger.warning("Variable %r skipped: %s", var.name, _var_err)
+                    _logger.error(
+                        "[TELEMETRY] Variable %r (id=%r) FAILED to add: %s",
+                        var.name, var_id, _var_err, exc_info=True,
+                    )
                     continue
+            _tel.variable_count_added = len(added_var_ids)
 
             _logger.info("Added %d variables to engine: %s", len(added_var_ids), sorted(added_var_ids))
 
@@ -316,6 +383,7 @@ class Mode1WorldModelConstruction:
                 # Try suffix match: "customer_traffic" should match "daily_customer_traffic"
                 suffix_matches = [v for v in added_var_ids if v.endswith(sanitized)]
                 if len(suffix_matches) == 1:
+                    _tel.record_var_id_resolve_miss(raw_id, suffix_matches[0], "suffix_match")
                     return suffix_matches[0]
                 # Try substring match: pick the shortest variable that contains the ID
                 contains_matches = sorted(
@@ -323,11 +391,20 @@ class Mode1WorldModelConstruction:
                     key=len,
                 )
                 if len(contains_matches) == 1:
+                    _tel.record_var_id_resolve_miss(raw_id, contains_matches[0], "substring_match")
                     return contains_matches[0]
                 # Try the reverse: does the raw ID contain any variable ID?
                 contained_in = [v for v in added_var_ids if v in sanitized]
                 if len(contained_in) == 1:
+                    _tel.record_var_id_resolve_miss(raw_id, contained_in[0], "contained_in_match")
                     return contained_in[0]
+                # FALLBACK — no match found; this will likely cause NodeNotFoundError
+                _logger.warning(
+                    "[TELEMETRY] _resolve_var_id FALLBACK: raw=%r sanitized=%r "
+                    "not in added_var_ids=%s",
+                    raw_id, sanitized, sorted(added_var_ids),
+                )
+                _tel.record_var_id_resolve_miss(raw_id, sanitized, "NO_MATCH_FALLBACK")
                 return sanitized  # fallback to exact sanitized form
 
             # Add ONLY grounded edges — rejected edges are soft-pruned
@@ -373,12 +450,45 @@ class Mode1WorldModelConstruction:
                     )
                     edges_added += 1
                 except Exception as _edge_err:
-                    _logger.warning("Grounded edge %s→%s skipped: %s",
-                                    vr.from_var, vr.to_var, _edge_err)
+                    _logger.error(
+                        "[TELEMETRY] Grounded edge %s(resolved=%s)→%s(resolved=%s) FAILED: %s",
+                        vr.from_var, _resolve_var_id(vr.from_var),
+                        vr.to_var, _resolve_var_id(vr.to_var),
+                        _edge_err, exc_info=True,
+                    )
+                    err_type = type(_edge_err).__name__
+                    if "NodeNotFound" in err_type:
+                        _tel.edge_dropout.node_not_found_errors += 1
+                    elif "CycleDetected" in err_type:
+                        _tel.edge_dropout.cycle_detected_errors += 1
+                    else:
+                        _tel.edge_dropout.other_add_errors += 1
                     continue
 
+            _tel.edge_dropout.final_edges_in_graph = edges_added
             _logger.info("Added %d/%d grounded edges to engine (%d rejected)",
                          edges_added, len(verification_results), len(rejected_edges_audit))
+
+            # ── Prune isolated variables (no connected edges) ──────────
+            connected_var_ids: set[str] = set()
+            for node_id in engine._graph.nodes():
+                if engine._graph.in_degree(node_id) > 0 or engine._graph.out_degree(node_id) > 0:
+                    connected_var_ids.add(node_id)
+            isolated = added_var_ids - connected_var_ids
+            for iso_id in isolated:
+                try:
+                    engine._graph.remove_node(iso_id)
+                    if iso_id in engine._variables:
+                        del engine._variables[iso_id]
+                except Exception:
+                    pass
+            if isolated:
+                _logger.info(
+                    "Pruned %d isolated variables (no edges): %s",
+                    len(isolated), sorted(isolated),
+                )
+                added_var_ids -= isolated
+                _tel.variable_count_added = len(added_var_ids)
 
             if rejected_edges_audit:
                 audit_entries.append(self._create_audit(
@@ -408,6 +518,16 @@ class Mode1WorldModelConstruction:
             critical_conflicts = conflict_report.critical_count
             conflict_details = [c.to_dict() for c in conflict_report.conflicts]
 
+            _tel.stage_end("graph_assembly", {
+                "variables_added": len(added_var_ids),
+                "edges_added": edges_added,
+                "edges_rejected_at_add": (
+                    _tel.edge_dropout.node_not_found_errors
+                    + _tel.edge_dropout.cycle_detected_errors
+                    + _tel.edge_dropout.other_add_errors
+                ),
+            })
+
             # Stage 5: Human Review
             self._current_stage = Mode1Stage.HUMAN_REVIEW
             world_model = engine.to_world_model(domain, f"World model for {domain}")
@@ -418,6 +538,19 @@ class Mode1WorldModelConstruction:
                 await self.causal.save_to_db(domain=domain, version_id=world_model.version_id)
             except Exception as exc:
                 logging.getLogger(__name__).warning("DB save after run failed: %s", exc)
+
+            # Dump telemetry
+            _tel.record("pipeline", "run_complete", {
+                "variables": len(variables),
+                "edges": engine.edge_count,
+                "evidence": len(self._evidence_cache),
+            })
+            summary_str = _tel.print_summary()
+            _logger.info("\n%s", summary_str)
+            try:
+                _tel.dump(f"diagnostic_output/telemetry_{trace_id}.json")
+            except Exception as _dump_err:
+                _logger.warning("Telemetry dump failed: %s", _dump_err)
 
             return Mode1Result(
                 trace_id=trace_id,
@@ -435,6 +568,12 @@ class Mode1WorldModelConstruction:
             )
             
         except Exception as e:
+            _logger.error("[TELEMETRY] Pipeline CRASHED at stage %s: %s", self._current_stage, e, exc_info=True)
+            try:
+                _tel.record("pipeline", "run_crashed", {"stage": str(self._current_stage), "error": str(e)})
+                _tel.dump(f"diagnostic_output/telemetry_CRASH_{trace_id}.json")
+            except Exception:
+                pass
             return Mode1Result(
                 trace_id=trace_id,
                 domain=domain,
@@ -531,7 +670,10 @@ class Mode1WorldModelConstruction:
             len(variables), [v.name for v in variables],
         )
 
-        self._variable_candidates = variables[:max_variables]
+        # No hard cap — all valid extracted variables pass through.
+        # Canonicalization merges duplicates; isolated nodes are pruned
+        # after graph assembly.
+        self._variable_candidates = variables
         return self._variable_candidates
 
     # ── Variable Canonicalization ───────────────────────────────────────
@@ -813,9 +955,12 @@ class Mode1WorldModelConstruction:
         doc_ids: list[str] | None = None,
     ) -> dict[str, list[EvidenceBundle]]:
         """Gather additional evidence for each variable using hybrid retrieval."""
+        import time as _time
+        _tel = get_telemetry()
         evidence_map: dict[str, list[EvidenceBundle]] = {}
+        t0 = _time.monotonic()
         
-        for var in variables:
+        for i, var in enumerate(variables, 1):
             query = f"{var.name}: {var.description}"
             # Phase 2: use hybrid retrieval with re-ranking
             request = RetrievalRequest(
@@ -825,14 +970,27 @@ class Mode1WorldModelConstruction:
                 use_reranking=True,
                 doc_ids=doc_ids,
             )
+            vt0 = _time.monotonic()
             bundles = await self.retrieval.retrieve(request)
+            vt1 = _time.monotonic()
             
+            _logger.info(
+                "[TELEMETRY] Evidence gathering [%d/%d] var=%r → %d bundles (%.1fs) SEQUENTIAL",
+                i, len(variables), var.name, len(bundles), vt1 - vt0,
+            )
             evidence_map[var.name] = bundles
             
             # Cache all evidence
             for e in bundles:
                 self._evidence_cache[e.content_hash[:12]] = e
         
+        elapsed = _time.monotonic() - t0
+        _logger.info(
+            "[TELEMETRY] Evidence gathering: %d vars, %d total bundles, %.1fs SEQUENTIAL "
+            "(estimated parallel time: %.1fs with 8 workers)",
+            len(variables), sum(len(v) for v in evidence_map.values()),
+            elapsed, elapsed / min(len(variables), 8),
+        )
         return evidence_map
     
     async def _draft_dag(
@@ -876,8 +1034,10 @@ class Mode1WorldModelConstruction:
             variables=var_ids,
             evidence_bundles=evidence_by_var,
         )
+        _tel = get_telemetry()
+        _tel.edge_dropout.pywhyllm_proposed = len(bridge_result.edge_proposals)
         _logger.info(
-            "PyWhyLLM bridge proposed %d edges, %d confounder suggestions",
+            "[TELEMETRY] PyWhyLLM bridge proposed %d edges, %d confounder suggestions",
             len(bridge_result.edge_proposals),
             len(bridge_result.confounder_suggestions),
         )
@@ -954,8 +1114,9 @@ class Mode1WorldModelConstruction:
             ))
             lx_edge_count += 1
 
+        _tel.edge_dropout.langextract_proposed = lx_edge_count
         _logger.info(
-            "DAG draft: %d total edges (%d from bridge, %d from LangExtract)",
+            "[TELEMETRY] DAG draft: %d total edges (%d from bridge, %d from LangExtract)",
             len(edges), len(bridge_result.edge_proposals), lx_edge_count,
         )
 
@@ -967,7 +1128,9 @@ class Mode1WorldModelConstruction:
                     var_cand.role = vc.role
                     break
 
-        self._edge_candidates = edges[:max_edges]
+        # No hard cap — every proposed edge goes to verification.
+        # Only edges that fail grounding are dropped.
+        self._edge_candidates = edges
         return self._edge_candidates
     
     async def _triangulate_evidence(
