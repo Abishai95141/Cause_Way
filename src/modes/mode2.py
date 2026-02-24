@@ -14,9 +14,9 @@ from datetime import datetime, timezone, timedelta
 from typing import Any, Optional
 from uuid import UUID, uuid4
 from enum import Enum
-import textwrap
 
 from src.extraction.service import ExtractionService
+from src.utils.text import truncate_evidence
 
 from src.agent.llm_client import LLMClient
 from src.causal.service import CausalService
@@ -100,7 +100,7 @@ class Mode2DecisionSupport:
     - Confidence-scored recommendations
     """
     
-    # ── LangExtract prompts/examples centralised in ExtractionService ──
+    # ── LangExtract prompts/examples centralised in ExtractionService ───
 
     def __init__(
         self,
@@ -114,8 +114,6 @@ class Mode2DecisionSupport:
         self.retrieval = retrieval_router or RetrievalRouter()
         self.causal = causal_service or CausalService()
         self.evidence_freshness_days = evidence_freshness_days
-
-        # Centralised extraction service
         self.extraction = extraction_service or ExtractionService()
         
         self._current_stage = Mode2Stage.QUERY_PARSING
@@ -166,6 +164,14 @@ class Mode2DecisionSupport:
             self._current_stage = Mode2Stage.MODEL_RETRIEVAL
             
             # Check if we have a world model for this domain
+            if domain not in available_domains:
+                # Try loading from DB before escalating
+                try:
+                    await self.causal.load_from_db(domain)
+                    available_domains = self.causal.list_domains()
+                except Exception:
+                    pass
+
             if domain not in available_domains:
                 # Escalate to Mode 1
                 return Mode2Result(
@@ -423,7 +429,7 @@ class Mode2DecisionSupport:
                 mediators_text = ", ".join(insight.mediators)
 
         evidence_text = "\n\n".join(
-            e.content[:400] for e in evidence[:5]
+            truncate_evidence(e.content, max_chars=800) for e in evidence[:5]
         )
 
         full_text = (
@@ -436,30 +442,28 @@ class Mode2DecisionSupport:
             f"Evidence:\n{evidence_text}"
         )
 
-        # Build evidence map for citation validation
-        evidence_map = {
-            eb.content_hash[:12]: eb.content[:200]
-            for eb in evidence
+        # Build evidence_map for citation validation
+        ev_map: dict[str, str] = {
+            e.content_hash[:12]: e.content for e in evidence
         }
 
         extracted = self.extraction.synthesize_recommendation(
             context_text=full_text,
-            evidence_map=evidence_map,
+            evidence_map=ev_map,
         )
+
+        # Map grounded evidence keys → bundle IDs
+        grounded_ids: list[UUID] = []
+        for key in extracted.grounded_evidence_keys:
+            eb = self._evidence_cache.get(key)
+            if eb:
+                grounded_ids.append(eb.bundle_id)
 
         confidence_map = {
             "high": ConfidenceLevel.HIGH,
             "medium": ConfidenceLevel.MEDIUM,
             "low": ConfidenceLevel.LOW,
         }
-
-        # Map grounded evidence keys back to UUIDs
-        grounded_ids: list[UUID] = []
-        for key in extracted.grounded_evidence_keys:
-            for eb in evidence:
-                if eb.content_hash[:12] == key:
-                    grounded_ids.append(eb.bundle_id)
-                    break
 
         return DecisionRecommendation(
             recommendation=extracted.recommendation,
@@ -471,11 +475,9 @@ class Mode2DecisionSupport:
             risks=extracted.risks,
             evidence_refs=grounded_ids,
         )
-
-    # ── Legacy regex extractors removed ─────────────────────────────
-    # _extract_parsed_query and _extract_recommendation have been
-    # replaced by LangExtract structured extraction (see _parse_query
-    # and _synthesize_recommendation).  No regex-based JSON parsing remains.
+    
+    # ── Legacy extractors removed ───────────────────────────────────
+    # All LangExtract calls now go through ExtractionService.
 
     @staticmethod
     def _resolve_domain(parsed_domain: str, available_domains: list[str]) -> Optional[str]:
